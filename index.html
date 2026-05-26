@@ -1,0 +1,808 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ROCA Sports</title>
+    <meta
+      name="description"
+      content="ROCA Sports organiza ligas deportivas competitivas y recreativas."
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <svg class="sprite" aria-hidden="true" focusable="false">
+      <symbol id="icon-user" viewBox="0 0 24 24">
+        <path d="M12 12.2a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" />
+        <path d="M4.7 20.3c.8-4.2 3.2-6.3 7.3-6.3s6.5 2.1 7.3 6.3" />
+      </symbol>
+      <symbol id="icon-users" viewBox="0 0 24 24">
+        <path d="M9 11.2a3.6 3.6 0 1 0 0-7.2 3.6 3.6 0 0 0 0 7.2Z" />
+        <path d="M15.6 11a3.1 3.1 0 1 0 0-6.2" />
+        <path d="M2.5 20.4c.8-4.6 3-6.9 6.5-6.9s5.7 2.3 6.5 6.9" />
+        <path d="M15.8 14.4c3 .4 4.9 2.4 5.7 6" />
+      </symbol>
+      <symbol id="icon-trophy" viewBox="0 0 24 24">
+        <path d="M8 4h8v4.6a7.5 7.5 0 0 1-1.7 4.8A5.7 5.7 0 0 1 12 15a5.7 5.7 0 0 1-2.3-1.6A7.5 7.5 0 0 1 8 8.6V4Z" />
+        <path d="M8 6H4v2c0 2.5 1.4 4.2 4.2 5" />
+        <path d="M16 6h4v2c0 2.5-1.4 4.2-4.2 5" />
+        <path d="M12 15v3" />
+        <path d="M8 20h8" />
+      </symbol>
+      <symbol id="icon-calendar" viewBox="0 0 24 24">
+        <path d="M5 5h14v15H5V5Z" />
+        <path d="M8 3v4" />
+        <path d="M16 3v4" />
+        <path d="M5 9h14" />
+        <path d="M8 12h2" />
+        <path d="M12 12h2" />
+        <path d="M16 12h2" />
+        <path d="M8 16h2" />
+        <path d="M12 16h2" />
+        <path d="M16 16h2" />
+      </symbol>
+      <symbol id="icon-shield" viewBox="0 0 24 24">
+        <path d="M12 3 20 6v5c0 5.3-2.7 8.5-8 10-5.3-1.5-8-4.7-8-10V6l8-3Z" />
+        <path d="m8.4 9.2 7.2 7.2" />
+        <path d="m15.6 9.2-7.2 7.2" />
+      </symbol>
+      <symbol id="icon-smile" viewBox="0 0 24 24">
+        <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" />
+        <path d="M8.7 9.5h.1" />
+        <path d="M15.2 9.5h.1" />
+        <path d="M8.2 14.1c1 1.6 2.3 2.4 3.8 2.4s2.8-.8 3.8-2.4" />
+      </symbol>
+      <symbol id="icon-ball" viewBox="0 0 24 24">
+        <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" />
+        <path d="m12 7 3.2 2.3-1.2 3.8H10L8.8 9.3 12 7Z" />
+        <path d="M12 7V3" />
+        <path d="M8.8 9.3 4.9 8" />
+        <path d="M10 13.1 7.6 17" />
+        <path d="M14 13.1 16.4 17" />
+        <path d="M15.2 9.3 19.1 8" />
+      </symbol>
+      <symbol id="icon-basket" viewBox="0 0 24 24">
+        <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" />
+        <path d="M4.8 7.3c4.4 1 8 4.9 9.8 12.8" />
+        <path d="M19.2 16.7c-4.4-1-8-4.9-9.8-12.8" />
+        <path d="M3.2 12h17.6" />
+        <path d="M12 3v18" />
+      </symbol>
+      <symbol id="icon-volley" viewBox="0 0 24 24">
+        <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" />
+        <path d="M12 3c.5 4.2 2.6 7.2 6.5 9" />
+        <path d="M5.5 5.8c3.7 1.3 6 3.9 6.9 7.8" />
+        <path d="M4.4 16.4c4.1-1.2 7.5-.5 10.2 2.2" />
+        <path d="M18.9 7.7c-3.4.7-5.9 2.4-7.4 5.2" />
+      </symbol>
+      <symbol id="icon-padel" viewBox="0 0 24 24">
+        <path d="M14.4 3.7c3.6 2.1 5.1 6.1 3.3 9.1-1.7 3-6 3.8-9.6 1.8-3.5-2.1-5-6.2-3.3-9.1 1.8-3 6-3.8 9.6-1.8Z" />
+        <path d="M9.3 14.8 4.5 23" />
+        <path d="M8.4 6.6h.1" />
+        <path d="M11.4 6.7h.1" />
+        <path d="M14.3 7.5h.1" />
+        <path d="M7.4 9.4h.1" />
+        <path d="M10.5 9.6h.1" />
+        <path d="M13.5 10.4h.1" />
+        <path d="M9.5 12.4h.1" />
+        <path d="M12.4 12.8h.1" />
+      </symbol>
+      <symbol id="icon-arrow" viewBox="0 0 24 24">
+        <path d="M4 12h14" />
+        <path d="m13 6 6 6-6 6" />
+      </symbol>
+      <symbol id="icon-phone" viewBox="0 0 24 24">
+        <path d="M8.4 4.5 6.2 6.7c.5 5.1 6 10.6 11.1 11.1l2.2-2.2-3.7-3.6-2.1 1.6c-1.8-.8-3.1-2.1-3.9-3.9l1.6-2.1-3-3.1Z" />
+      </symbol>
+      <symbol id="icon-mail" viewBox="0 0 24 24">
+        <path d="M4 6h16v12H4V6Z" />
+        <path d="m4 7 8 6 8-6" />
+      </symbol>
+      <symbol id="icon-pin" viewBox="0 0 24 24">
+        <path d="M12 21s6-5.3 6-11a6 6 0 1 0-12 0c0 5.7 6 11 6 11Z" />
+        <path d="M12 12.2a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4Z" />
+      </symbol>
+    </svg>
+
+    <header class="site-header" id="inicio">
+      <a class="brand" href="#inicio" aria-label="ROCA Sports inicio">
+        <span class="brand-roca">ROCA</span>
+        <span class="brand-sports">sports</span>
+      </a>
+
+      <nav class="main-nav" aria-label="Navegación principal">
+        <a class="active" href="#inicio">Inicio</a>
+        <a href="#ligas">Ligas</a>
+        <a href="#torneos">Torneos</a>
+        <a href="#calendario">Calendario</a>
+        <a href="#sedes">Sedes</a>
+        <a href="#nosotros">Nosotros</a>
+        <a href="#contacto">Contacto</a>
+      </nav>
+
+      <a class="register-top" href="#registro" data-mock="registro">
+        <svg><use href="#icon-user" /></svg>
+        <span>Regístrate</span>
+      </a>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-photo" aria-hidden="true">
+          <img
+            src="https://images.unsplash.com/photo-1772707681004-ebbce15554d4?auto=format&fit=crop&w=2200&q=82"
+            alt=""
+          />
+        </div>
+        <div class="hero-inner">
+          <div class="hero-copy">
+            <div class="hero-logo" aria-hidden="true">
+              <span>ROCA</span>
+              <strong>Sports</strong>
+            </div>
+            <h1 id="hero-title">
+              Más que ligas,<br />
+              creamos <em>comunidad.</em>
+            </h1>
+            <p>
+              Organizamos ligas deportivas competitivas y recreativas para todas
+              las edades y niveles.
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="#ligas" data-mock="ver-ligas">
+                <svg><use href="#icon-trophy" /></svg>
+                <span>Ver ligas</span>
+              </a>
+              <a class="btn btn-outline" href="#calendario" data-mock="calendario">
+                <svg><use href="#icon-calendar" /></svg>
+                <span>Calendario</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="hero-panel" aria-label="Vistas destacadas">
+            <button class="featured-card large" type="button" data-mock="disciplina" data-label="Fútbol">
+              <img
+                src="https://images.unsplash.com/photo-1772707681004-ebbce15554d4?auto=format&fit=crop&w=1300&q=80"
+                alt="Jugador de fútbol en cancha iluminada de noche"
+              />
+              <span>Fútbol</span>
+            </button>
+            <button class="featured-card" type="button" data-mock="disciplina" data-label="Básquetbol">
+              <img
+                src="https://images.unsplash.com/photo-1762563497199-230cac255216?auto=format&fit=crop&w=900&q=78"
+                alt="Canasta de básquetbol iluminada de noche"
+              />
+              <span>Básquetbol</span>
+            </button>
+            <button class="featured-card" type="button" data-mock="disciplina" data-label="Futsal">
+              <img
+                src="https://images.unsplash.com/photo-1760174012435-630a17a434ed?auto=format&fit=crop&w=900&q=78"
+                alt="Jugadores de futsal en cancha techada"
+              />
+              <span>Futsal</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="scoreboard-strip" aria-label="Marcadores recientes">
+        <div class="strip-label">
+          <strong>ROCA ScoreCenter</strong>
+          <span>En vivo</span>
+        </div>
+        <div class="score-ticker">
+          <button class="score-pill is-live" type="button" data-mock="match" data-label="Titanes 4-2 Halcones">
+            <span>Fútbol · Final</span>
+            <strong>Titanes <b>4</b></strong>
+            <strong>Halcones <b>2</b></strong>
+          </button>
+          <button class="score-pill" type="button" data-mock="match" data-label="Raptors 58-54 Lobos">
+            <span>Básquet · 4C 01:12</span>
+            <strong>Raptors <b>58</b></strong>
+            <strong>Lobos <b>54</b></strong>
+          </button>
+          <button class="score-pill" type="button" data-mock="match" data-label="Aztecas 2-1 Rockets">
+            <span>Voleibol · Set 4</span>
+            <strong>Aztecas <b>2</b></strong>
+            <strong>Rockets <b>1</b></strong>
+          </button>
+          <button class="score-pill" type="button" data-mock="match" data-label="Norte 6-6 Centro">
+            <span>Futsal · 2T 06:40</span>
+            <strong>Norte <b>6</b></strong>
+            <strong>Centro <b>6</b></strong>
+          </button>
+          <button class="score-pill" type="button" data-mock="match" data-label="Dupla Roca 7-5 Smash">
+            <span>Pádel · Set 2</span>
+            <strong>Dupla Roca <b>7</b></strong>
+            <strong>Smash <b>5</b></strong>
+          </button>
+        </div>
+      </section>
+
+      <section class="values" aria-label="Valores de ROCA Sports">
+        <article>
+          <svg><use href="#icon-users" /></svg>
+          <h2>Comunidad</h2>
+          <p>Fomentamos el respeto, la convivencia y el trabajo en equipo.</p>
+        </article>
+        <article>
+          <svg><use href="#icon-trophy" /></svg>
+          <h2>Competencia</h2>
+          <p>Ligas bien organizadas con niveles justos y reglas claras.</p>
+        </article>
+        <article>
+          <svg><use href="#icon-calendar" /></svg>
+          <h2>Organización</h2>
+          <p>Calendarios, resultados y estadísticas siempre al día.</p>
+        </article>
+        <article>
+          <svg><use href="#icon-shield" /></svg>
+          <h2>Seguridad</h2>
+          <p>Espacios seguros y personal capacitado para que te concentres en jugar.</p>
+        </article>
+      </section>
+
+      <section class="leagues" id="ligas" aria-labelledby="leagues-title">
+        <div class="section-heading">
+          <p class="eyebrow">Nuestras ligas</p>
+          <h2 id="leagues-title">Disciplinas</h2>
+        </div>
+        <div class="league-grid">
+          <button class="league-card" type="button" data-mock="disciplina" data-label="Fútbol">
+            <img
+              src="https://images.unsplash.com/photo-1772707681004-ebbce15554d4?auto=format&fit=crop&w=900&q=80"
+              alt="Jugador de fútbol en cancha iluminada"
+            />
+            <span class="league-icon"><svg><use href="#icon-ball" /></svg></span>
+            <strong>Fútbol</strong>
+            <i></i>
+            <span class="arrow"><svg><use href="#icon-arrow" /></svg></span>
+          </button>
+          <button class="league-card" type="button" data-mock="disciplina" data-label="Básquetbol">
+            <img
+              src="https://images.unsplash.com/photo-1762563497199-230cac255216?auto=format&fit=crop&w=900&q=78"
+              alt="Canasta de básquetbol en cancha nocturna"
+            />
+            <span class="league-icon"><svg><use href="#icon-basket" /></svg></span>
+            <strong>Básquetbol</strong>
+            <i></i>
+            <span class="arrow"><svg><use href="#icon-arrow" /></svg></span>
+          </button>
+          <button class="league-card" type="button" data-mock="disciplina" data-label="Voleibol">
+            <img
+              src="https://images.unsplash.com/photo-1666901356149-93f2eb3ba5a2?auto=format&fit=crop&w=900&q=78"
+              alt="Balón de voleibol sobre cancha"
+            />
+            <span class="league-icon"><svg><use href="#icon-volley" /></svg></span>
+            <strong>Voleibol</strong>
+            <i></i>
+            <span class="arrow"><svg><use href="#icon-arrow" /></svg></span>
+          </button>
+          <button class="league-card" type="button" data-mock="disciplina" data-label="Futsal">
+            <img
+              src="https://images.unsplash.com/photo-1760174012435-630a17a434ed?auto=format&fit=crop&w=900&q=78"
+              alt="Jugadores de futsal en cancha cubierta"
+            />
+            <span class="league-icon"><svg><use href="#icon-ball" /></svg></span>
+            <strong>Futsal</strong>
+            <i></i>
+            <span class="arrow"><svg><use href="#icon-arrow" /></svg></span>
+          </button>
+          <button class="league-card" type="button" data-mock="disciplina" data-label="Pádel">
+            <img
+              src="https://images.unsplash.com/photo-1759355456246-6937354a395d?auto=format&fit=crop&w=900&q=78"
+              alt="Jugador de pádel golpeando una pelota"
+            />
+            <span class="league-icon"><svg><use href="#icon-padel" /></svg></span>
+            <strong>Pádel</strong>
+            <i></i>
+            <span class="arrow"><svg><use href="#icon-arrow" /></svg></span>
+          </button>
+        </div>
+        <button class="all-leagues" type="button" data-mock="todas-ligas">
+          Ver todas las ligas
+        </button>
+      </section>
+
+      <section class="sports-page league-center" aria-labelledby="league-center-title">
+        <div class="page-head">
+          <p class="eyebrow">Liga Center</p>
+          <h2 id="league-center-title">Tablas, marcadores y líderes</h2>
+          <div class="page-actions" aria-label="Filtros de liga">
+            <button type="button" class="chip is-active" data-mock="filter" data-label="Fútbol 7">Fútbol 7</button>
+            <button type="button" class="chip" data-mock="filter" data-label="Básquet 5x5">Básquet 5x5</button>
+            <button type="button" class="chip" data-mock="filter" data-label="Futsal">Futsal</button>
+            <button type="button" class="chip" data-mock="filter" data-label="Pádel">Pádel</button>
+          </div>
+        </div>
+
+        <div class="data-grid">
+          <article class="data-card standings-card">
+            <div class="card-head">
+              <h3>Tabla general</h3>
+              <button type="button" data-mock="report" data-label="Tabla general">Ver completa</button>
+            </div>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Equipo</th>
+                    <th>JJ</th>
+                    <th>G</th>
+                    <th>E</th>
+                    <th>P</th>
+                    <th>DG</th>
+                    <th>Pts</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>Titanes FC</td>
+                    <td>9</td>
+                    <td>7</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>+18</td>
+                    <td><strong>22</strong></td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td>Roca Norte</td>
+                    <td>9</td>
+                    <td>6</td>
+                    <td>2</td>
+                    <td>1</td>
+                    <td>+14</td>
+                    <td><strong>20</strong></td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td>Halcones</td>
+                    <td>9</td>
+                    <td>5</td>
+                    <td>2</td>
+                    <td>2</td>
+                    <td>+8</td>
+                    <td><strong>17</strong></td>
+                  </tr>
+                  <tr>
+                    <td>4</td>
+                    <td>Atlético Sur</td>
+                    <td>9</td>
+                    <td>4</td>
+                    <td>3</td>
+                    <td>2</td>
+                    <td>+5</td>
+                    <td><strong>15</strong></td>
+                  </tr>
+                  <tr>
+                    <td>5</td>
+                    <td>Leones</td>
+                    <td>9</td>
+                    <td>4</td>
+                    <td>1</td>
+                    <td>4</td>
+                    <td>-1</td>
+                    <td><strong>13</strong></td>
+                  </tr>
+                  <tr>
+                    <td>6</td>
+                    <td>Rockets</td>
+                    <td>9</td>
+                    <td>3</td>
+                    <td>1</td>
+                    <td>5</td>
+                    <td>-7</td>
+                    <td><strong>10</strong></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="data-card match-center-card">
+            <div class="card-head">
+              <h3>Marcadores</h3>
+              <button type="button" data-mock="report" data-label="Marcadores">Actualizar</button>
+            </div>
+            <div class="match-list">
+              <button type="button" class="match-row" data-mock="match" data-label="Titanes FC vs Halcones">
+                <span class="status final">Final</span>
+                <strong>Titanes FC <b>4</b></strong>
+                <strong>Halcones <b>2</b></strong>
+              </button>
+              <button type="button" class="match-row" data-mock="match" data-label="Roca Norte vs Atlético Sur">
+                <span class="status live">En vivo 2T</span>
+                <strong>Roca Norte <b>1</b></strong>
+                <strong>Atlético Sur <b>1</b></strong>
+              </button>
+              <button type="button" class="match-row" data-mock="match" data-label="Leones vs Rockets">
+                <span class="status next">Hoy 21:30</span>
+                <strong>Leones <b>-</b></strong>
+                <strong>Rockets <b>-</b></strong>
+              </button>
+            </div>
+          </article>
+
+          <article class="data-card leaders-card">
+            <div class="card-head">
+              <h3>Líderes</h3>
+              <button type="button" data-mock="report" data-label="Líderes de temporada">Stats</button>
+            </div>
+            <ol class="leader-list">
+              <li><span>Diego Mora</span><strong>18 G</strong></li>
+              <li><span>Iván Reyes</span><strong>14 G</strong></li>
+              <li><span>Alan Soto</span><strong>11 A</strong></li>
+              <li><span>Marco Villa</span><strong>7 CS</strong></li>
+            </ol>
+          </article>
+        </div>
+      </section>
+
+      <section class="sports-page tournaments-page" id="torneos" aria-labelledby="tournaments-title">
+        <div class="page-head split-head">
+          <div>
+            <p class="eyebrow">Torneos</p>
+            <h2 id="tournaments-title">Copa Roca Apertura</h2>
+          </div>
+          <div class="page-actions">
+            <button type="button" class="chip is-active" data-mock="bracket" data-label="Bracket Apertura">Bracket</button>
+            <button type="button" class="chip" data-mock="registro">Inscribir equipo</button>
+          </div>
+        </div>
+
+        <div class="tournament-grid">
+          <article class="data-card tournament-feature">
+            <span class="tag">Cuartos de final</span>
+            <h3>Titanes FC y Roca Norte llegan como favoritos</h3>
+            <p>La fase final se juega a eliminación directa con tiempos extra y shootout en caso de empate.</p>
+            <button type="button" class="mini-link" data-mock="article" data-label="Previa de Copa Roca">Leer previa</button>
+          </article>
+
+          <article class="data-card bracket-card">
+            <div class="card-head">
+              <h3>Bracket</h3>
+              <button type="button" data-mock="bracket" data-label="Llaves completas">Ver llaves</button>
+            </div>
+            <div class="bracket">
+              <div class="round">
+                <span>Titanes FC <b>4</b></span>
+                <span>Rockets <b>1</b></span>
+                <span>Roca Norte <b>3</b></span>
+                <span>Leones <b>2</b></span>
+              </div>
+              <div class="round">
+                <span>Titanes FC <b>vs</b></span>
+                <span>Roca Norte <b>20:00</b></span>
+              </div>
+              <div class="round champion">
+                <span>Final · Sábado</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="data-card">
+            <div class="card-head">
+              <h3>Grupo B</h3>
+              <button type="button" data-mock="report" data-label="Grupo B">Detalle</button>
+            </div>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Equipo</th>
+                    <th>Pts</th>
+                    <th>PF</th>
+                    <th>PC</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Raptors</td><td>12</td><td>332</td><td>290</td></tr>
+                  <tr><td>Lobos</td><td>10</td><td>318</td><td>301</td></tr>
+                  <tr><td>Centauros</td><td>8</td><td>286</td><td>279</td></tr>
+                  <tr><td>Coyotes</td><td>6</td><td>271</td><td>310</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="sports-page calendar-page" id="calendario" aria-labelledby="calendar-title">
+        <div class="page-head split-head">
+          <div>
+            <p class="eyebrow">Calendario</p>
+            <h2 id="calendar-title">Agenda de partidos</h2>
+          </div>
+          <div class="page-actions">
+            <button type="button" class="chip is-active" data-mock="filter" data-label="Esta semana">Semana</button>
+            <button type="button" class="chip" data-mock="download" data-label="Calendario completo">Descargar rol</button>
+          </div>
+        </div>
+
+        <div class="calendar-layout">
+          <article class="data-card calendar-card">
+            <div class="date-rail" aria-label="Días de competencia">
+              <button type="button" class="date-chip is-active" data-mock="filter" data-label="Miércoles 29"><span>Mié</span><strong>29</strong></button>
+              <button type="button" class="date-chip" data-mock="filter" data-label="Jueves 30"><span>Jue</span><strong>30</strong></button>
+              <button type="button" class="date-chip" data-mock="filter" data-label="Viernes 31"><span>Vie</span><strong>31</strong></button>
+              <button type="button" class="date-chip" data-mock="filter" data-label="Sábado 01"><span>Sáb</span><strong>01</strong></button>
+            </div>
+            <div class="table-scroll">
+              <table class="schedule-table">
+                <thead>
+                  <tr>
+                    <th>Hora</th>
+                    <th>Liga</th>
+                    <th>Partido</th>
+                    <th>Sede</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>19:00</td>
+                    <td>Fútbol 7</td>
+                    <td>Titanes FC vs Halcones</td>
+                    <td>Cancha Norte</td>
+                    <td><button type="button" data-mock="match" data-label="Titanes FC vs Halcones">Ficha</button></td>
+                  </tr>
+                  <tr>
+                    <td>20:00</td>
+                    <td>Futsal</td>
+                    <td>Roca Norte vs Atlético Sur</td>
+                    <td>Arena Centro</td>
+                    <td><button type="button" data-mock="match" data-label="Roca Norte vs Atlético Sur">Ficha</button></td>
+                  </tr>
+                  <tr>
+                    <td>21:30</td>
+                    <td>Básquetbol</td>
+                    <td>Raptors vs Lobos</td>
+                    <td>Duela Poniente</td>
+                    <td><button type="button" data-mock="match" data-label="Raptors vs Lobos">Ficha</button></td>
+                  </tr>
+                  <tr>
+                    <td>22:10</td>
+                    <td>Pádel</td>
+                    <td>Dupla Roca vs Smash</td>
+                    <td>Club Sur</td>
+                    <td><button type="button" data-mock="match" data-label="Dupla Roca vs Smash">Ficha</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+
+          <aside class="data-card broadcast-card">
+            <h3>Partido destacado</h3>
+            <p class="broadcast-time">Hoy · 20:00</p>
+            <div class="versus">
+              <strong>Roca Norte</strong>
+              <span>vs</span>
+              <strong>Atlético Sur</strong>
+            </div>
+            <p>Juego clave por el segundo lugar de la tabla.</p>
+            <button type="button" class="mini-link" data-mock="match" data-label="Roca Norte vs Atlético Sur">Ver previa</button>
+          </aside>
+        </div>
+      </section>
+
+      <section class="sports-page venues-page" id="sedes" aria-labelledby="venues-title">
+        <div class="page-head">
+          <p class="eyebrow">Sedes</p>
+          <h2 id="venues-title">Canchas y disponibilidad</h2>
+        </div>
+
+        <div class="venues-layout">
+          <article class="venue-map data-card" aria-label="Mapa mock de sedes">
+            <span class="map-pin pin-a">Norte</span>
+            <span class="map-pin pin-b">Centro</span>
+            <span class="map-pin pin-c">Sur</span>
+            <span class="map-pin pin-d">Poniente</span>
+          </article>
+
+          <div class="venue-cards">
+            <button type="button" class="venue-card" data-mock="venue" data-label="Cancha Norte">
+              <strong>Cancha Norte</strong>
+              <span>Fútbol 7 · 3 campos · Iluminación LED</span>
+              <b>Disponible 18:00 - 23:00</b>
+            </button>
+            <button type="button" class="venue-card" data-mock="venue" data-label="Arena Centro">
+              <strong>Arena Centro</strong>
+              <span>Futsal y voleibol · marcador digital</span>
+              <b>Últimos 2 horarios</b>
+            </button>
+            <button type="button" class="venue-card" data-mock="venue" data-label="Club Sur">
+              <strong>Club Sur</strong>
+              <span>Pádel · 4 canchas · cafetería</span>
+              <b>Disponible fin de semana</b>
+            </button>
+            <button type="button" class="venue-card" data-mock="venue" data-label="Duela Poniente">
+              <strong>Duela Poniente</strong>
+              <span>Básquetbol · gradas · vestidores</span>
+              <b>Reservas abiertas</b>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="about" id="nosotros" aria-labelledby="about-title">
+        <div class="about-media">
+          <img
+            src="https://images.unsplash.com/photo-1760174012435-630a17a434ed?auto=format&fit=crop&w=1400&q=78"
+            alt="Partido de futsal en cancha cubierta"
+          />
+          <div class="about-badge">
+            <span class="mountain"></span>
+            <span class="poster-roca">ROCA</span>
+            <span class="poster-sports">sports</span>
+            <p>Más que ligas,<br />creamos comunidad.</p>
+          </div>
+        </div>
+        <div class="about-copy">
+          <h2 id="about-title">Sobre <em>ROCA Sports</em></h2>
+          <p>
+            ROCA Sports nace con la misión de impulsar el deporte y la sana
+            competencia a través de ligas que conectan personas, fortalecen
+            comunidades y crean experiencias inolvidables.
+          </p>
+          <div class="stats">
+            <button type="button" data-mock="stat" data-label="+50 equipos">
+              <svg><use href="#icon-users" /></svg>
+              <strong>+50</strong>
+              <span>Equipos</span>
+            </button>
+            <button type="button" data-mock="stat" data-label="+200 partidos por temporada">
+              <svg><use href="#icon-trophy" /></svg>
+              <strong>+200</strong>
+              <span>Partidos por temporada</span>
+            </button>
+            <button type="button" data-mock="sedes" data-label="5 sedes">
+              <svg><use href="#icon-calendar" /></svg>
+              <strong>5</strong>
+              <span>Sedes</span>
+            </button>
+            <button type="button" data-mock="stat" data-label="100% pasión por el deporte">
+              <svg><use href="#icon-smile" /></svg>
+              <strong>100%</strong>
+              <span>Pasión por el deporte</span>
+            </button>
+          </div>
+          <div class="about-insights">
+            <button type="button" data-mock="article" data-label="Operación ROCA">
+              <span>Operación</span>
+              <strong>Roles, árbitros y resultados en un mismo flujo.</strong>
+            </button>
+            <button type="button" data-mock="article" data-label="Comunidad ROCA">
+              <span>Comunidad</span>
+              <strong>Formatos competitivos y recreativos para todos los niveles.</strong>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="cta" id="registro" aria-labelledby="cta-title">
+        <div>
+          <h2 id="cta-title">¿Listo para jugar?</h2>
+          <p>Únete a la liga que va contigo.</p>
+        </div>
+        <button class="btn btn-dark" type="button" data-mock="registro">
+          <svg><use href="#icon-user" /></svg>
+          <span>Regístrate ahora</span>
+          <svg><use href="#icon-arrow" /></svg>
+        </button>
+      </section>
+
+      <section class="sports-page contact-page" id="contacto" aria-labelledby="contact-title">
+        <div class="page-head split-head">
+          <div>
+            <p class="eyebrow">Contacto</p>
+            <h2 id="contact-title">Mesa de control</h2>
+          </div>
+          <div class="page-actions">
+            <button type="button" class="chip is-active" data-mock="contacto" data-label="Soporte de ligas">Soporte</button>
+            <button type="button" class="chip" data-mock="contacto" data-label="Patrocinios">Patrocinios</button>
+          </div>
+        </div>
+
+        <div class="contact-layout">
+          <form class="contact-form" aria-label="Formulario de contacto mock">
+            <label>
+              Nombre
+              <input type="text" placeholder="Tu nombre" />
+            </label>
+            <label>
+              Liga
+              <select>
+                <option>Fútbol 7</option>
+                <option>Básquetbol</option>
+                <option>Voleibol</option>
+                <option>Futsal</option>
+                <option>Pádel</option>
+              </select>
+            </label>
+            <label>
+              Mensaje
+              <textarea placeholder="Cuéntanos qué necesitas"></textarea>
+            </label>
+            <button class="btn btn-primary" type="button" data-mock="contact-form">
+              Enviar mensaje
+            </button>
+          </form>
+
+          <aside class="support-board">
+            <article>
+              <span>Tiempo de respuesta</span>
+              <strong>12 min</strong>
+              <p>Promedio de atención durante jornada.</p>
+            </article>
+            <article>
+              <span>Operación</span>
+              <strong>17:00 - 23:30</strong>
+              <p>Coordinadores activos en cada sede.</p>
+            </article>
+            <article>
+              <span>Canal rápido</span>
+              <strong>55 1234 5678</strong>
+              <p>Reportes de marcador, roles y registros.</p>
+            </article>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-brand">
+        <span class="brand-roca">ROCA</span>
+        <span class="brand-sports">sports</span>
+        <p>Más que ligas,<br />creamos <strong>comunidad.</strong></p>
+      </div>
+      <nav aria-label="Enlaces de pie de página">
+        <h2>Enlaces</h2>
+        <a href="#inicio">Inicio</a>
+        <a href="#ligas">Ligas</a>
+        <a href="#torneos">Torneos</a>
+        <a href="#calendario">Calendario</a>
+        <a href="#sedes">Sedes</a>
+        <a href="#contacto">Contacto</a>
+      </nav>
+      <div class="social">
+        <h2>Síguenos</h2>
+        <div>
+          <button type="button" data-mock="social" data-label="Instagram">IG</button>
+          <button type="button" data-mock="social" data-label="Facebook">f</button>
+          <button type="button" data-mock="social" data-label="TikTok">t</button>
+          <button type="button" data-mock="social" data-label="YouTube">YT</button>
+        </div>
+      </div>
+      <address>
+        <h2>Contacto</h2>
+        <button type="button" data-mock="contacto" data-label="55 1234 5678">
+          <svg><use href="#icon-phone" /></svg>
+          <span>55 1234 5678</span>
+        </button>
+        <button type="button" data-mock="contacto" data-label="hola@rocasports.com">
+          <svg><use href="#icon-mail" /></svg>
+          <span>hola@rocasports.com</span>
+        </button>
+        <button type="button" data-mock="sedes" data-label="Tu ciudad">
+          <svg><use href="#icon-pin" /></svg>
+          <span>Tu ciudad</span>
+        </button>
+      </address>
+    </footer>
+
+    <div class="mock-toast" role="status" aria-live="polite"></div>
+
+    <dialog class="mock-dialog" aria-labelledby="mock-title">
+      <button class="dialog-close" type="button" aria-label="Cerrar">×</button>
+      <p class="dialog-kicker">Mock interactivo</p>
+      <h2 id="mock-title">ROCA Sports</h2>
+      <div class="dialog-body"></div>
+    </dialog>
+  </body>
+</html>
