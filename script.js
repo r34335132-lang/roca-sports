@@ -3,8 +3,31 @@ const dialogTitle = document.querySelector("#mock-title");
 const dialogBody = document.querySelector(".dialog-body");
 const closeDialog = document.querySelector(".dialog-close");
 const toast = document.querySelector(".mock-toast");
+const siteHeader = document.querySelector(".site-header");
+const menuToggle = document.querySelector(".menu-toggle");
+const mainNav = document.querySelector(".main-nav");
 
 let toastTimer;
+
+function closeMobileMenu() {
+  siteHeader.classList.remove("nav-open");
+  menuToggle.setAttribute("aria-expanded", "false");
+}
+
+menuToggle.addEventListener("click", () => {
+  const isOpen = siteHeader.classList.toggle("nav-open");
+  menuToggle.setAttribute("aria-expanded", String(isOpen));
+});
+
+mainNav.querySelectorAll("a").forEach((link) => {
+  link.addEventListener("click", closeMobileMenu);
+});
+
+window.addEventListener("resize", () => {
+  if (window.innerWidth > 720) {
+    closeMobileMenu();
+  }
+});
 
 function showToast(message) {
   toast.textContent = message;

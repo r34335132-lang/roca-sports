@@ -176,6 +176,38 @@ img {
   box-shadow: 0 0 22px rgba(185, 255, 0, 0.22);
 }
 
+.menu-toggle {
+  display: none;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(185, 255, 0, 0.45);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--white);
+  padding: 10px;
+}
+
+.menu-toggle span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  margin: 5px 0;
+  background: var(--lime);
+  transition: 180ms ease;
+}
+
+.site-header.nav-open .menu-toggle span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.site-header.nav-open .menu-toggle span:nth-child(2) {
+  opacity: 0;
+}
+
+.site-header.nav-open .menu-toggle span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
 svg {
   width: 18px;
   height: 18px;
@@ -1062,6 +1094,17 @@ svg {
   gap: 18px;
 }
 
+.data-grid > *,
+.tournament-grid > *,
+.calendar-layout > *,
+.venues-layout > *,
+.contact-layout > *,
+.hero-panel,
+.score-ticker,
+.league-grid {
+  min-width: 0;
+}
+
 .data-grid {
   grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.82fr) minmax(280px, 0.58fr);
 }
@@ -1090,6 +1133,7 @@ svg {
 }
 
 .data-card {
+  min-width: 0;
   padding: 18px;
 }
 
@@ -1124,6 +1168,8 @@ svg {
 }
 
 .table-scroll {
+  max-width: 100%;
+  min-width: 0;
   overflow-x: auto;
 }
 
@@ -1645,5 +1691,276 @@ tbody tr:hover {
 
   .mock-list {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  #ligas,
+  #torneos,
+  #calendario,
+  #sedes,
+  #nosotros,
+  #contacto,
+  #registro {
+    scroll-margin-top: 86px;
+  }
+
+  .site-header {
+    grid-template-columns: 1fr auto;
+    gap: 10px 14px;
+    padding: 10px 14px;
+  }
+
+  .brand-roca,
+  .footer-brand .brand-roca {
+    font-size: 34px;
+  }
+
+  .brand-sports,
+  .footer-brand .brand-sports {
+    font-size: 15px;
+  }
+
+  .menu-toggle {
+    display: block;
+    justify-self: end;
+  }
+
+  .main-nav,
+  .register-top {
+    display: none;
+  }
+
+  .site-header.nav-open .main-nav {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    overflow: visible;
+    padding: 8px 0 0;
+  }
+
+  .site-header.nav-open .main-nav a {
+    display: flex;
+    align-items: center;
+    min-height: 42px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.04);
+    padding: 0 12px;
+  }
+
+  .site-header.nav-open .main-nav a::after {
+    display: none;
+  }
+
+  .site-header.nav-open .register-top {
+    display: inline-flex;
+    grid-column: 1 / -1;
+    justify-self: stretch;
+    width: 100%;
+  }
+
+  .hero-inner {
+    width: min(100% - 28px, 1440px);
+    gap: 24px;
+    padding: 24px 0 30px;
+  }
+
+  .hero-logo {
+    margin-bottom: 20px;
+  }
+
+  .hero-logo span {
+    font-size: clamp(64px, 18vw, 92px);
+  }
+
+  .hero-logo strong {
+    font-size: clamp(38px, 11vw, 56px);
+  }
+
+  .hero h1 {
+    font-size: clamp(25px, 8vw, 36px);
+  }
+
+  .hero p {
+    font-size: 16px;
+  }
+
+  .hero-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .hero-actions .btn {
+    min-width: 0;
+    padding: 0 10px;
+  }
+
+  .hero-panel {
+    display: grid;
+    grid-auto-columns: minmax(238px, 78vw);
+    grid-auto-flow: column;
+    grid-template-columns: none;
+    grid-template-rows: 210px;
+    min-height: 210px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scroll-snap-type: x mandatory;
+  }
+
+  .featured-card,
+  .featured-card.large {
+    grid-row: auto;
+    height: 210px;
+    scroll-snap-align: start;
+  }
+
+  .scoreboard-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .strip-label {
+    padding: 12px 16px;
+  }
+
+  .score-ticker {
+    grid-auto-columns: minmax(190px, 72vw);
+  }
+
+  .values {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 8px 14px;
+  }
+
+  .values article {
+    padding: 18px 10px;
+  }
+
+  .values article + article {
+    border-left: 0;
+  }
+
+  .values article:nth-child(even) {
+    border-left: 1px solid rgba(255, 255, 255, 0.16);
+  }
+
+  .values article:nth-child(n + 3) {
+    border-top: 1px solid rgba(255, 255, 255, 0.16);
+  }
+
+  .leagues {
+    padding: 28px 14px 36px;
+  }
+
+  .league-card {
+    min-height: 255px;
+  }
+
+  .sports-page {
+    padding: 34px 14px;
+  }
+
+  .page-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .chip {
+    width: 100%;
+    padding: 0 10px;
+  }
+
+  .data-card {
+    padding: 14px;
+  }
+
+  .card-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  table {
+    min-width: 560px;
+  }
+
+  th,
+  td {
+    padding: 9px 8px;
+  }
+
+  .date-rail {
+    grid-template-columns: repeat(4, minmax(70px, 1fr));
+    overflow-x: auto;
+  }
+
+  .date-chip {
+    min-height: 62px;
+  }
+
+  .venue-map {
+    min-height: 270px;
+  }
+
+  .contact-form,
+  .support-board article,
+  .venue-card {
+    padding: 14px;
+  }
+
+  .about-copy {
+    padding: 28px 16px;
+  }
+
+  .about-insights {
+    grid-template-columns: 1fr;
+  }
+
+  .cta {
+    padding: 20px 16px;
+  }
+
+  .cta .btn {
+    width: 100%;
+  }
+
+  .site-footer {
+    gap: 24px;
+    padding: 26px 18px 32px;
+  }
+
+  .mock-dialog {
+    max-height: calc(100svh - 28px);
+    overflow: auto;
+  }
+}
+
+@media (max-width: 430px) {
+  .site-header.nav-open .main-nav,
+  .hero-actions,
+  .values,
+  .page-actions,
+  .date-rail {
+    grid-template-columns: 1fr;
+  }
+
+  .values article:nth-child(even) {
+    border-left: 0;
+  }
+
+  .values article + article {
+    border-top: 1px solid rgba(255, 255, 255, 0.16);
+  }
+
+  .hero-panel {
+    grid-auto-columns: minmax(232px, 86vw);
+  }
+
+  .mock-toast {
+    right: 12px;
+    bottom: 12px;
+    max-width: calc(100vw - 24px);
   }
 }
