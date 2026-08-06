@@ -28,6 +28,20 @@ npm install
 npm run dev
 ```
 
+## Deploy en Vercel
+
+Vite + React Router funciona en Vercel. El repo incluye `vercel.json` con rewrite SPA.
+
+1. Importa el repo en [vercel.com](https://vercel.com)
+2. Framework Preset: **Vite** (Build: `npm run build`, Output: `dist`)
+3. En Environment Variables agrega las mismas del `.env`:
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+   - `VITE_ADMIN_EMAILS`
+   - `VITE_DEFAULT_COMMISSION_PCT`
+4. Deploy
+
+Sin el rewrite, rutas como `/auth` o `/dashboard/admin` fallan al refrescar.
 ## Roles
 
 | Rol | Cómo |
