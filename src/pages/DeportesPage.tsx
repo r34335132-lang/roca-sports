@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { SiteFooter, SiteHeader } from "@/components/layout/SiteHeader";
 import { SPORT_IMAGES, SPORT_LABELS } from "@/lib/types";
 
-const SPORTS = ["soccer", "basketball", "volleyball", "flag", "baseball", "cycling"] as const;
+const SPORTS = ["soccer", "basketball", "boxing", "flag", "baseball", "cycling"] as const;
 
 export function DeportesPage() {
   return (

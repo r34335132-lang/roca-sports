@@ -446,13 +446,4 @@ export function slugify(value: string) {
     .slice(0, 48);
 }
 
-export function calcBudget(params: {
-  players: number;
-  feePerPlayer: number;
-  commissionPct: number;
-}) {
-  const gross = params.players * params.feePerPlayer;
-  const platform = Math.round((gross * params.commissionPct) / 100);
-  const owner = gross - platform;
-  return { gross, platform, owner };
-}
+export { calcBudget } from "@/lib/finance";

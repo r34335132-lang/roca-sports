@@ -4,6 +4,7 @@ export type SportType =
   | "basketball"
   | "baseball"
   | "volleyball"
+  | "boxing"
   | "cycling"
   | "other";
 
@@ -246,6 +247,7 @@ export const SPORT_LABELS: Record<SportType | string, string> = {
   basketball: "Básquetbol",
   baseball: "Béisbol",
   volleyball: "Voleibol",
+  boxing: "Box",
   cycling: "Ciclismo",
   other: "Otro",
 };
@@ -260,6 +262,8 @@ export const SPORT_IMAGES: Record<string, string> = {
     "https://images.unsplash.com/photo-1566577739112-5180d4bf9390?auto=format&fit=crop&w=1400&q=80",
   volleyball:
     "https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?auto=format&fit=crop&w=1400&q=80",
+  boxing:
+    "https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?auto=format&fit=crop&w=1400&q=80",
   cycling:
     "https://images.unsplash.com/photo-1517649763962-0c623066027b?auto=format&fit=crop&w=1400&q=80",
   other:

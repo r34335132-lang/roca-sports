@@ -19,17 +19,24 @@ export function PlayerCardPreview({
   const isMvp = templateType === "mvp_edition" || sportConfig.variant === "mvp";
   const isRookie = templateType === "rookie_card";
   const isEndurance = sportConfig.variant === "endurance";
+  const isBoxing = league.sport === "boxing";
 
-  const gradient = isMvp
-    ? "linear-gradient(145deg, #4A3300, #0A0A0A, #1D1600)"
-    : isEndurance
-      ? `linear-gradient(145deg, #2A1200, ${primary}ee, #050505)`
-      : `linear-gradient(145deg, ${primary}ee, ${secondary}, #050505)`;
+  const gradient = isBoxing
+    ? "linear-gradient(160deg, #3a0000 0%, #120404 42%, #7a0b0b 100%)"
+    : isMvp
+      ? "linear-gradient(145deg, #4A3300, #0A0A0A, #1D1600)"
+      : isEndurance
+        ? `linear-gradient(145deg, #2A1200, ${primary}ee, #050505)`
+        : `linear-gradient(145deg, ${primary}ee, ${secondary}, #050505)`;
 
   return (
-    <article className="upper-deck" style={{ ["--ud-accent" as string]: accent }}>
+    <article
+      className={`upper-deck ${isBoxing ? "is-boxing" : ""}`}
+      style={{ ["--ud-accent" as string]: accent }}
+    >
       <div className="upper-deck-frame" style={{ background: gradient }}>
-        <span className="ud-texture">{template?.name ?? "UPPER DECK"}</span>
+        <span className="ud-shine" aria-hidden="true" />
+        <span className="ud-texture">{template?.name ?? (isBoxing ? "FIGHT NIGHT" : "UPPER DECK")}</span>
         <div className="ud-top">
           <div className="ud-logo">
             {league.logo_url ? (
@@ -38,8 +45,8 @@ export function PlayerCardPreview({
               <span>{sportConfig.icon}</span>
             )}
           </div>
-          <span className={`ud-badge ${isMvp ? "gold" : ""}`}>
-            {isMvp ? "MVP" : isRookie ? "ROOKIE" : sportConfig.rarity}
+          <span className={`ud-badge ${isMvp || isBoxing ? "gold" : ""}`}>
+            {isBoxing ? "KNOCKOUT" : isMvp ? "MVP" : isRookie ? "ROOKIE" : sportConfig.rarity}
           </span>
         </div>
 
@@ -47,7 +54,7 @@ export function PlayerCardPreview({
           {profile.photo_url ? (
             <img src={profile.photo_url} alt={profile.full_name} />
           ) : (
-            <div className="ud-photo-fallback">👤</div>
+            <div className="ud-photo-fallback">{isBoxing ? "🥊" : "👤"}</div>
           )}
           <span className="ud-number" style={{ color: `${accent}33` }}>
             {profile.number}

@@ -6,22 +6,50 @@ const DISCIPLINES = [
   {
     key: "soccer",
     label: "Fútbol",
+    tag: "Liga estrella",
     img: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=1300&q=80",
   },
   {
     key: "basketball",
     label: "Básquetbol",
+    tag: "Cancha",
     img: "https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=900&q=78",
   },
   {
-    key: "volleyball",
-    label: "Voleibol",
-    img: "https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?auto=format&fit=crop&w=900&q=78",
+    key: "boxing",
+    label: "Box",
+    tag: "Fight night",
+    img: "https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?auto=format&fit=crop&w=1200&q=80",
   },
   {
     key: "flag",
     label: "Flag",
+    tag: "Toque",
     img: "https://images.unsplash.com/photo-1560272564-c83b66b1ad12?auto=format&fit=crop&w=900&q=78",
+  },
+];
+
+const NEWS = [
+  {
+    tag: "Boxeo",
+    title: "El ring llega a ROCA: box con credencial Upper Deck",
+    copy: "La disciplina de box entra al scoreboard con fotos de pelea, rareza Knockout y stats de KO.",
+    img: "https://images.unsplash.com/photo-1517438476312-10d79c077509?auto=format&fit=crop&w=1200&q=80",
+    href: "/deportes/boxing",
+  },
+  {
+    tag: "Credenciales",
+    title: "Las cartas son el gancho: foil, rareza y QR",
+    copy: "Cada jugador abre su Upper Deck con el look de su deporte. El box de fight night las revela al choque.",
+    img: "https://images.unsplash.com/photo-1461896833974-ffe9f0cb4a1e?auto=format&fit=crop&w=1200&q=80",
+    href: "/box",
+  },
+  {
+    tag: "Ligas",
+    title: "Finanzas claras: cuánto entra, cuánto sale",
+    copy: "Dueños y colaboradores ven comisión, caja y su corte al instante cuando mueven el porcentaje.",
+    img: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=900&q=70",
+    href: "/dashboard/admin",
   },
 ];
 
@@ -66,11 +94,15 @@ export function LandingPage() {
               {DISCIPLINES.slice(0, 3).map((d, i) => (
                 <Link
                   key={d.key}
-                  className={`featured-card ${i === 0 ? "large" : ""}`}
+                  className={`featured-card hook-card ${i === 0 ? "large" : ""} ${d.key === "boxing" ? "is-boxing" : ""}`}
                   to={`/deportes/${d.key}`}
                 >
                   <img src={d.img} alt={d.label} />
-                  <span>{d.label}</span>
+                  <div className="hook-meta">
+                    <em>{d.tag}</em>
+                    <span>{d.label}</span>
+                    <b>Entrar</b>
+                  </div>
                 </Link>
               ))}
             </div>
@@ -104,7 +136,7 @@ export function LandingPage() {
             </article>
             <article>
               <h3>Box</h3>
-              <p>Animación donde las Upper Deck chocan y revelan cada deporte.</p>
+              <p>Pack de fight night: las Upper Deck chocan y revelan cada deporte.</p>
             </article>
           </div>
         </section>
@@ -116,17 +148,48 @@ export function LandingPage() {
           </div>
           <div className="discipline-grid">
             {DISCIPLINES.map((d) => (
-              <Link key={d.key} className="discipline-card" to={`/deportes/${d.key}`}>
+              <Link
+                key={d.key}
+                className={`discipline-card hook-card ${d.key === "boxing" ? "is-boxing" : ""}`}
+                to={`/deportes/${d.key}`}
+              >
                 <img src={d.img} alt={d.label} />
-                <span>{d.label}</span>
+                <div className="hook-meta">
+                  <em>{d.tag}</em>
+                  <span>{d.label}</span>
+                </div>
               </Link>
             ))}
           </div>
         </section>
 
-        <section className="section-pad box-home">
+        <section className="section-pad news-section" id="noticias">
+          <div className="section-head row-between">
+            <div>
+              <p className="eyebrow">Noticias</p>
+              <h2>Lo que se mueve en ROCA</h2>
+            </div>
+            <Link className="text-link" to="/deportes">
+              Ver disciplinas →
+            </Link>
+          </div>
+          <div className="news-grid">
+            {NEWS.map((item) => (
+              <Link key={item.title} className="news-card" to={item.href}>
+                <img src={item.img} alt="" />
+                <div>
+                  <em>{item.tag}</em>
+                  <h3>{item.title}</h3>
+                  <p>{item.copy}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        <section className="section-pad box-home fight-night">
           <div className="section-head">
-            <p className="eyebrow">Upper Deck</p>
+            <p className="eyebrow">Fight Night Pack</p>
             <h2>Abre el box</h2>
           </div>
           <UpperDeckBox />

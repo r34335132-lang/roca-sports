@@ -3,12 +3,26 @@ import { Link, Navigate } from "react-router-dom";
 import { SiteFooter, SiteHeader } from "@/components/layout/SiteHeader";
 import { useAuth } from "@/context/AuthContext";
 import {
-  calcBudget,
+  collaboratorCuts,
+  emptyCollaborator,
+  loadCollaborators,
+  saveCollaborators,
+  DEFAULT_COLLABORATORS,
+  type Collaborator,
+} from "@/lib/collaborators";
+import {
+  calcPlatformFinance,
+  clampPct,
+  money,
+  sumPayments,
+} from "@/lib/finance";
+import {
   countAllPlayers,
   fetchAllPayments,
   fetchLeagues,
   fetchLeaguePricing,
   markPaymentPaid,
+  upsertLeaguePricing,
 } from "@/lib/services/leagues";
 import { getDefaultCommissionPct } from "@/lib/supabase";
 import type { League, LeaguePricing, PlayerPayment } from "@/lib/types";
@@ -21,7 +35,10 @@ export function AdminDashboard() {
   const [playerCount, setPlayerCount] = useState(0);
   const [pricingMap, setPricingMap] = useState<Record<string, LeaguePricing | null>>({});
   const [commission, setCommission] = useState(getDefaultCommissionPct());
+  const [collaborators, setCollaborators] = useState<Collaborator[]>(DEFAULT_COLLABORATORS);
   const [error, setError] = useState<string | null>(null);
+  const [msg, setMsg] = useState<string | null>(null);
+  const [savingPct, setSavingPct] = useState(false);
 
   const load = async () => {
     try {
@@ -40,6 +57,8 @@ export function AdminDashboard() {
         }),
       );
       setPricingMap(map);
+      const firstPct = Object.values(map).find((row) => row)?.platform_commission_pct;
+      if (firstPct != null) setCommission(Number(firstPct));
     } catch (e) {
       setError(e instanceof Error ? e.message : "Error");
     }
@@ -49,20 +68,50 @@ export function AdminDashboard() {
     if (configured) void load();
   }, [configured]);
 
-  const paid = payments.filter((p) => p.status === "paid");
-  const pending = payments.filter((p) => p.status === "pending");
-  const avgFee =
-    Object.values(pricingMap).find((p) => p)?.fee_per_player ?? 80;
+  useEffect(() => {
+    setCollaborators(loadCollaborators());
+  }, []);
 
-  const budget = useMemo(
+  const persistCollaborators = (next: Collaborator[]) => {
+    setCollaborators(next);
+    saveCollaborators(next);
+  };
+
+  const finance = useMemo(
     () =>
-      calcBudget({
-        players: playerCount,
-        feePerPlayer: Number(avgFee),
+      calcPlatformFinance({
+        leagues,
+        payments,
+        pricingMap,
         commissionPct: commission,
+        previewCommission: commission,
       }),
-    [playerCount, avgFee, commission],
+    [leagues, payments, pricingMap, commission],
   );
+
+  const paidCount = payments.filter((p) => p.status === "paid").length;
+  const pendingCount = payments.filter((p) => p.status === "pending").length;
+  const paidAmount = sumPayments(payments, "paid");
+  const pendingAmount = sumPayments(payments, "pending");
+  const splits = useMemo(
+    () => collaboratorCuts(collaborators, finance.platform),
+    [collaborators, finance.platform],
+  );
+  const pctOk = Math.abs(splits.totalPct - 100) < 0.5;
+
+  const updateCollaborator = (id: string, patch: Partial<Collaborator>) => {
+    persistCollaborators(
+      collaborators.map((c) =>
+        c.id === id
+          ? {
+              ...c,
+              ...patch,
+              pct: patch.pct == null ? c.pct : clampPct(Number(patch.pct)),
+            }
+          : c,
+      ),
+    );
+  };
 
   if (!configured) {
     return (
@@ -98,79 +147,194 @@ export function AdminDashboard() {
   return (
     <>
       <SiteHeader />
-      <main className="section-pad dashboard admin-dash">
+      <main className="section-pad dashboard admin-dash finance-dash">
         <div className="section-head row-between">
           <div>
             <p className="eyebrow">Admin ROCA</p>
-            <h1>Centro de operaciones</h1>
+            <h1>Finanzas del equipo</h1>
+            <p className="muted">
+              Ingresos reales, salidas a dueños y cuánto le toca a cada colaborador.
+            </p>
           </div>
-          <label className="commission-control">
-            Mi comisión %
-            <input
-              type="number"
-              min={0}
-              max={100}
-              value={commission}
-              onChange={(e) => setCommission(Number(e.target.value))}
-            />
+          <label className="commission-control live-pct">
+            Comisión ROCA
+            <div className="pct-input">
+              <input
+                type="range"
+                min={0}
+                max={100}
+                step={1}
+                value={commission}
+                onChange={(e) => setCommission(clampPct(Number(e.target.value)))}
+              />
+              <input
+                type="number"
+                min={0}
+                max={100}
+                value={commission}
+                onChange={(e) => setCommission(clampPct(Number(e.target.value)))}
+              />
+              <span>%</span>
+            </div>
+            <button
+              type="button"
+              className="btn btn-outline"
+              disabled={savingPct}
+              onClick={async () => {
+                setSavingPct(true);
+                setError(null);
+                try {
+                  await Promise.all(
+                    leagues.map(async (league) => {
+                      const fee = Number(pricingMap[league.id]?.fee_per_player ?? 80);
+                      await upsertLeaguePricing(league.id, fee, commission);
+                    }),
+                  );
+                  await load();
+                  setMsg(`Comisión del ${commission}% aplicada a todas las ligas`);
+                } catch (e) {
+                  setError(e instanceof Error ? e.message : "No se pudo guardar");
+                } finally {
+                  setSavingPct(false);
+                }
+              }}
+            >
+              {savingPct ? "Guardando..." : "Aplicar a ligas"}
+            </button>
           </label>
         </div>
 
         {error && <p className="form-error">{error}</p>}
+        {msg && <p className="ok-banner">{msg}</p>}
 
-        <div className="kpi-grid">
-          <article className="kpi">
-            <span>Ligas inscritas</span>
-            <strong>{leagues.length}</strong>
+        <div className="finance-hero">
+          <article className="finance-stat in">
+            <span>Ingresó</span>
+            <strong>{money(finance.income)}</strong>
+            <small>{paidCount} pagos cobrados · {playerCount} jugadores</small>
           </article>
-          <article className="kpi">
-            <span>Jugadores</span>
-            <strong>{playerCount}</strong>
+          <article className="finance-stat out">
+            <span>Salió a dueños</span>
+            <strong>{money(finance.outflow)}</strong>
+            <small>Parte de las ligas después de comisión</small>
           </article>
-          <article className="kpi">
-            <span>Pagados</span>
-            <strong>{paid.length}</strong>
+          <article className="finance-stat hold">
+            <span>Caja ROCA</span>
+            <strong>{money(finance.platform)}</strong>
+            <small>Se reparte entre colaboradores</small>
           </article>
-          <article className="kpi">
-            <span>Pendientes</span>
-            <strong>{pending.length}</strong>
-          </article>
-          <article className="kpi highlight">
-            <span>Presupuesto bruto</span>
-            <strong>${budget.gross.toLocaleString("es-MX")}</strong>
-          </article>
-          <article className="kpi highlight">
-            <span>ROCA se lleva ({commission}%)</span>
-            <strong>${budget.platform.toLocaleString("es-MX")}</strong>
-          </article>
-          <article className="kpi">
-            <span>Dueños reciben</span>
-            <strong>${budget.owner.toLocaleString("es-MX")}</strong>
-          </article>
-          <article className="kpi">
-            <span>Cuota promedio</span>
-            <strong>${Number(avgFee).toLocaleString("es-MX")}</strong>
+          <article className="finance-stat wait">
+            <span>Por cobrar</span>
+            <strong>{money(pendingAmount)}</strong>
+            <small>{pendingCount} pagos pendientes</small>
           </article>
         </div>
 
+        <section className="flow-panel">
+          <div className="flow-head">
+            <h3>Flujo de dinero</h3>
+            <p>
+              De {money(paidAmount)} cobrados, {money(finance.outflow)} salen a dueños y{" "}
+              {money(finance.platform)} se quedan en ROCA ({commission}%).
+            </p>
+          </div>
+          <div className="flow-bar" aria-hidden="true">
+            <i style={{ width: `${paidAmount ? (finance.outflow / paidAmount) * 100 : 0}%` }} />
+            <b style={{ width: `${paidAmount ? (finance.platform / paidAmount) * 100 : 0}%` }} />
+          </div>
+          <div className="flow-legend">
+            <span>Dueños {100 - commission}%</span>
+            <span>ROCA {commission}%</span>
+          </div>
+        </section>
+
+        <section className="dash-panel collab-panel">
+          <div className="row-between">
+            <div>
+              <h3>Colaboradores ROCA</h3>
+              <p className="muted">
+                Cambia el porcentaje y el pago se actualiza al momento sobre la caja de{" "}
+                {money(finance.platform)}.
+              </p>
+            </div>
+            <button
+              type="button"
+              className="btn btn-outline"
+              onClick={() => persistCollaborators([...collaborators, emptyCollaborator()])}
+            >
+              Agregar colaborador
+            </button>
+          </div>
+
+          <div className={`pct-total ${pctOk ? "ok" : "warn"}`}>
+            Reparto {splits.totalPct.toFixed(0)}% · Reserva {money(splits.remainder)}
+          </div>
+
+          <div className="collab-grid">
+            {splits.cuts.map((c) => (
+              <article key={c.id} className="collab-card">
+                <div className="collab-avatar">{(c.name || "C").slice(0, 1).toUpperCase()}</div>
+                <div className="collab-fields">
+                  <input
+                    value={c.name}
+                    placeholder="Nombre"
+                    onChange={(e) => updateCollaborator(c.id, { name: e.target.value })}
+                  />
+                  <input
+                    value={c.role}
+                    placeholder="Rol"
+                    onChange={(e) => updateCollaborator(c.id, { role: e.target.value })}
+                  />
+                </div>
+                <label className="collab-pct">
+                  <span>{c.pct}%</span>
+                  <input
+                    type="range"
+                    min={0}
+                    max={100}
+                    value={c.pct}
+                    onChange={(e) => updateCollaborator(c.id, { pct: Number(e.target.value) })}
+                  />
+                  <input
+                    type="number"
+                    min={0}
+                    max={100}
+                    value={c.pct}
+                    onChange={(e) => updateCollaborator(c.id, { pct: Number(e.target.value) })}
+                  />
+                </label>
+                <strong className="collab-pay">{money(c.amount)}</strong>
+                <button
+                  type="button"
+                  className="ghost-btn"
+                  onClick={() => persistCollaborators(collaborators.filter((x) => x.id !== c.id))}
+                >
+                  Quitar
+                </button>
+              </article>
+            ))}
+          </div>
+        </section>
+
         <div className="dash-split">
           <section className="dash-panel">
-            <h3>Ligas registradas</h3>
+            <h3>Ligas y corte</h3>
             <ul className="simple-list">
-              {leagues.map((l) => (
-                <li key={l.id}>
+              {finance.rows.map((row) => (
+                <li key={row.leagueId}>
                   <div>
-                    <strong>{l.name}</strong>
+                    <strong>{row.name}</strong>
                     <small>
-                      {SPORT_LABELS[l.sport]} · {l.city}
+                      {SPORT_LABELS[row.sport] ?? row.sport} · cuota {money(row.fee)} · ROCA{" "}
+                      {row.commissionPct}%
                     </small>
                   </div>
                   <span>
-                    ${Number(pricingMap[l.id]?.fee_per_player ?? 80)} ·{" "}
-                    {Number(pricingMap[l.id]?.platform_commission_pct ?? commission)}%
+                    {money(row.income)} in · {money(row.platform)} ROCA
                   </span>
                 </li>
               ))}
+              {finance.rows.length === 0 && <li>Aún no hay ligas.</li>}
             </ul>
           </section>
 
@@ -192,7 +356,7 @@ export function AdminDashboard() {
                     <tr key={p.id}>
                       <td>{p.players?.full_name ?? p.player_id.slice(0, 8)}</td>
                       <td>{p.leagues?.name ?? "—"}</td>
-                      <td>${Number(p.amount).toLocaleString("es-MX")}</td>
+                      <td>{money(Number(p.amount))}</td>
                       <td>
                         <span className={`pill status-${p.status}`}>{p.status}</span>
                       </td>

@@ -2,8 +2,8 @@ import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { SiteFooter, SiteHeader } from "@/components/layout/SiteHeader";
 import { useAuth } from "@/context/AuthContext";
+import { calcBudget, clampPct, money, sumPayments } from "@/lib/finance";
 import {
-  calcBudget,
   createMatchday,
   createPlayer,
   createTeam,
@@ -17,7 +17,7 @@ import {
   upsertLeaguePricing,
   upsertTeamOfWeek,
 } from "@/lib/services/leagues";
-import type { League, Matchday, Player, PlayerPayment, Team } from "@/lib/types";
+import type { Matchday, Player, PlayerPayment, Team } from "@/lib/types";
 
 export function OwnerDashboard() {
   const { user, ownedLeagues, configured, refreshRoles } = useAuth();
@@ -83,14 +83,27 @@ export function OwnerDashboard() {
     if (leagueId) void load(leagueId).catch((e) => setError(String(e.message ?? e)));
   }, [leagueId]);
 
-  const budget = useMemo(
+  const paidIn = useMemo(() => sumPayments(payments, "paid"), [payments]);
+  const pendingIn = useMemo(() => sumPayments(payments, "pending"), [payments]);
+  const liveCommission = clampPct(commission);
+  const liveFee = Number(fee) || 0;
+  const projected = useMemo(
     () =>
       calcBudget({
         players: players.length,
-        feePerPlayer: fee,
-        commissionPct: commission,
+        feePerPlayer: liveFee,
+        commissionPct: liveCommission,
       }),
-    [players.length, fee, commission],
+    [players.length, liveFee, liveCommission],
+  );
+  const collected = useMemo(
+    () =>
+      calcBudget({
+        players: 1,
+        feePerPlayer: paidIn,
+        commissionPct: liveCommission,
+      }),
+    [paidIn, liveCommission],
   );
 
   if (!configured) {
@@ -139,7 +152,7 @@ export function OwnerDashboard() {
           </select>
         </div>
 
-        <div className="kpi-grid">
+        <div className="kpi-grid owner-kpis">
           <article className="kpi">
             <span>Equipos</span>
             <strong>{teams.length}</strong>
@@ -148,15 +161,34 @@ export function OwnerDashboard() {
             <span>Jugadores</span>
             <strong>{players.length}</strong>
           </article>
-          <article className="kpi highlight">
-            <span>Vas a ganar</span>
-            <strong>${budget.owner.toLocaleString("es-MX")}</strong>
+        </div>
+
+        <div className="finance-hero owner-finance">
+          <article className="finance-stat in">
+            <span>Ingresó</span>
+            <strong>{money(paidIn)}</strong>
+            <small>Pagos cobrados de jugadores</small>
           </article>
-          <article className="kpi">
-            <span>ROCA ({commission}%)</span>
-            <strong>${budget.platform.toLocaleString("es-MX")}</strong>
+          <article className="finance-stat wait">
+            <span>Por cobrar</span>
+            <strong>{money(pendingIn)}</strong>
+            <small>Aún no entra a caja</small>
+          </article>
+          <article className="finance-stat hold">
+            <span>Te toca ahora</span>
+            <strong>{money(collected.owner)}</strong>
+            <small>{100 - liveCommission}% de lo cobrado</small>
+          </article>
+          <article className="finance-stat out">
+            <span>Sale a ROCA</span>
+            <strong>{money(collected.platform)}</strong>
+            <small>{liveCommission}% de comisión</small>
           </article>
         </div>
+        <p className="muted finance-note">
+          Si cobran todos: entra {money(projected.gross)}, te quedan {money(projected.owner)} y
+          ROCA se lleva {money(projected.platform)}.
+        </p>
 
         {error && <p className="form-error">{error}</p>}
         {msg && <p className="ok-banner">{msg}</p>}
@@ -214,18 +246,33 @@ export function OwnerDashboard() {
               </label>
               <label>
                 Comisión ROCA (%)
-                <input
-                  type="number"
-                  value={commission}
-                  onChange={(e) => setCommission(Number(e.target.value))}
-                />
+                <div className="pct-input">
+                  <input
+                    type="range"
+                    min={0}
+                    max={100}
+                    value={liveCommission}
+                    onChange={(e) => setCommission(clampPct(Number(e.target.value)))}
+                  />
+                  <input
+                    type="number"
+                    min={0}
+                    max={100}
+                    value={liveCommission}
+                    onChange={(e) => setCommission(clampPct(Number(e.target.value)))}
+                  />
+                  <span>%</span>
+                </div>
               </label>
             </div>
+            <p className="muted">
+              Al mover el porcentaje, tu ganancia y la de ROCA se recalculan al instante.
+            </p>
             <button
               type="button"
               className="btn btn-primary"
               onClick={async () => {
-                await upsertLeaguePricing(league.id, fee, commission);
+                await upsertLeaguePricing(league.id, liveFee, liveCommission);
                 setMsg("Pricing guardado");
               }}
             >
@@ -412,7 +459,7 @@ export function OwnerDashboard() {
                 <li key={p.id}>
                   <div>
                     <strong>{p.players?.full_name ?? "Jugador"}</strong>
-                    <small>${Number(p.amount)} · {p.status}</small>
+                    <small>{money(Number(p.amount))} · {p.status}</small>
                   </div>
                   {p.status !== "paid" && (
                     <button

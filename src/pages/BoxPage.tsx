@@ -5,13 +5,13 @@ export function BoxPage() {
   return (
     <>
       <SiteHeader />
-      <main className="section-pad">
+      <main className="section-pad fight-night-page">
         <div className="section-head">
-          <p className="eyebrow">Upper Deck Box</p>
-          <h1>Las cartas chocan y se revelan</h1>
+          <p className="eyebrow">Fight Night Box</p>
+          <h1>Sube al ring y abre el pack</h1>
           <p className="muted">
-            Cada deporte trae su logo, rareza y stats. Abre el box para ver la
-            animación de choque.
+            Diseño de boxeo total: cuerdas, esquinas y campana. Las cartas chocan
+            y revelan cada deporte con su rareza.
           </p>
         </div>
         <UpperDeckBox />

@@ -7,7 +7,7 @@ import { createLeague, slugify, uploadLeagueAsset } from "@/lib/services/leagues
 import { getSportCardConfig } from "@/lib/cardSportConfig";
 import type { LeagueCategory, LeagueInput, PlayerProfile, SportType, VisualStyle } from "@/lib/types";
 
-const SPORTS: SportType[] = ["soccer", "basketball", "volleyball", "flag", "baseball", "cycling", "other"];
+const SPORTS: SportType[] = ["soccer", "basketball", "boxing", "flag", "baseball", "cycling", "other"];
 const CATEGORIES: LeagueCategory[] = ["varonil", "femenil", "mixto", "infantil", "juvenil", "libre"];
 const STYLES: VisualStyle[] = ["upper_deck", "modern", "urban", "minimal", "classic"];
 

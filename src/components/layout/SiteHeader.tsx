@@ -53,6 +53,9 @@ export function SiteHeader() {
         <NavLink to="/box" onClick={() => setOpen(false)}>
           Box
         </NavLink>
+        <a href="/#noticias" onClick={() => setOpen(false)}>
+          Noticias
+        </a>
         {user && (
           <NavLink to={dashPath} onClick={() => setOpen(false)}>
             Dashboard
@@ -88,7 +91,8 @@ export function SiteFooter() {
       <p>Ligas · Credenciales Upper Deck · Comunidad</p>
       <div className="footer-links">
         <Link to="/deportes">Deportes</Link>
-        <Link to="/ligas">Ligas</Link>
+        <Link to="/box">Box</Link>
+        <a href="/#noticias">Noticias</a>
         <Link to="/crear-liga">Crear liga</Link>
         <Link to="/auth">Entrar</Link>
       </div>

@@ -72,7 +72,9 @@ export function SportHub({ sport }: { sport: string }) {
           ? "points"
           : sport === "flag"
             ? "touchdowns"
-            : "points";
+            : sport === "boxing"
+              ? "mvp_count"
+              : "points";
     return [...players]
       .sort((a, b) => Number(statsFor(b)?.[key as keyof PlayerStats] ?? 0) - Number(statsFor(a)?.[key as keyof PlayerStats] ?? 0))
       .slice(0, 8);

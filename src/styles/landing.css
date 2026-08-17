@@ -24,7 +24,8 @@ html {
 #sedes,
 #nosotros,
 #contacto,
-#registro {
+#registro,
+#noticias {
   scroll-margin-top: 190px;
 }
 
@@ -406,6 +407,55 @@ svg {
   font-size: clamp(18px, 2vw, 30px);
   font-weight: 900;
   text-transform: uppercase;
+}
+
+.hook-meta {
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 3;
+  display: grid;
+  gap: 6px;
+  padding: 18px;
+  pointer-events: none;
+}
+
+.hook-meta em {
+  width: max-content;
+  color: var(--lime);
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.hook-card.is-boxing .hook-meta em {
+  color: #ffb4b4;
+}
+
+.hook-meta span {
+  position: static;
+  font-family: Impact, "Arial Black", sans-serif;
+  font-size: clamp(22px, 2.4vw, 36px);
+  font-style: italic;
+  line-height: 0.95;
+  text-shadow: 0 10px 24px rgba(0, 0, 0, 0.75);
+}
+
+.hook-meta b {
+  width: max-content;
+  margin-top: 4px;
+  color: #050708;
+  background: var(--lime);
+  padding: 4px 10px;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.hook-card.is-boxing .hook-meta b {
+  background: #e10600;
+  color: #fff;
 }
 
 .featured-card:hover img,
@@ -1701,7 +1751,8 @@ tbody tr:hover {
   #sedes,
   #nosotros,
   #contacto,
-  #registro {
+  #registro,
+  #noticias {
     scroll-margin-top: 86px;
   }
 

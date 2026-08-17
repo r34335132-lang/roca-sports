@@ -3,7 +3,7 @@ import { PlayerCardPreview } from "@/components/credentials/PlayerCardPreview";
 import { getSportCardConfig } from "@/lib/cardSportConfig";
 import type { League, PlayerProfile, SportType } from "@/lib/types";
 
-const DEMO_SPORTS: SportType[] = ["soccer", "basketball", "volleyball", "flag"];
+const DEMO_SPORTS: SportType[] = ["soccer", "basketball", "boxing", "flag"];
 
 function demoProfile(sport: SportType, index: number): PlayerProfile {
   const cfg = getSportCardConfig(sport);
@@ -28,17 +28,23 @@ function demoProfile(sport: SportType, index: number): PlayerProfile {
     updated_at: "",
   };
 
+  const names = ["RIVERA", "MORALES", "CASTRO", "NÚÑEZ"];
+  const positions = ["DEL", "BASE", "KO", "WR"];
+
   return {
     id: `p-${sport}`,
     league_id: league.id,
     team_id: null,
     auth_user_id: null,
-    full_name: ["RIVERA", "MORALES", "CASTRO", "NÚÑEZ"][index % 4],
-    nickname: null,
+    full_name: names[index % 4],
+    nickname: sport === "boxing" ? "El Relámpago" : null,
     number: String(7 + index * 3),
-    position: ["DEL", "BASE", "OP", "WR"][index % 4],
+    position: positions[index % 4],
     birth_date: null,
-    photo_url: null,
+    photo_url:
+      sport === "boxing"
+        ? "https://images.unsplash.com/photo-1599058917212-d750089bc07e?auto=format&fit=crop&w=800&q=70"
+        : null,
     status: "active",
     credential_code: `ROCA-PLAYER-2026-000${index + 1}`,
     created_at: "",
@@ -47,7 +53,7 @@ function demoProfile(sport: SportType, index: number): PlayerProfile {
     team: {
       id: "t1",
       league_id: league.id,
-      name: ["Tigres", "Lobos", "Águilas", "Panteras"][index % 4],
+      name: ["Tigres", "Lobos", "Corner Rojo", "Panteras"][index % 4],
       logo_url: null,
       primary_color: null,
       secondary_color: null,
@@ -66,7 +72,7 @@ function demoProfile(sport: SportType, index: number): PlayerProfile {
       assists: 4,
       tackles: 3,
       interceptions: 2,
-      mvp_count: 1,
+      mvp_count: 4,
       sacks: 2,
       rebounds: 7,
       blocks: 3,
@@ -107,17 +113,26 @@ export function UpperDeckBox({ profiles }: { profiles?: PlayerProfile[] }) {
   }, [opened]);
 
   return (
-    <section className={`ud-box ${phase}`} aria-label="Box Upper Deck">
-      <div className="ud-box-stage">
+    <section className={`ud-box fight-box ${phase}`} aria-label="Box de boxeo Upper Deck">
+      <div className="ud-box-stage ring-stage">
+        <div className="ring-ropes" aria-hidden="true">
+          <i />
+          <i />
+          <i />
+        </div>
+        <span className="ring-corner tl">ROJO</span>
+        <span className="ring-corner br">AZUL</span>
+        <div className="ring-lights" aria-hidden="true" />
+
         <button
           type="button"
-          className="ud-box-lid"
+          className="ud-box-lid champ-pack"
           onClick={() => setOpened(true)}
           disabled={opened && phase !== "reveal"}
         >
           <span>ROCA</span>
-          <strong>UPPER DECK BOX</strong>
-          <em>{opened ? "Abriendo..." : "Abrir box"}</em>
+          <strong>FIGHT NIGHT PACK</strong>
+          <em>{opened ? "Campana..." : "Sube al ring"}</em>
         </button>
 
         <div className="ud-box-cards">
@@ -133,11 +148,13 @@ export function UpperDeckBox({ profiles }: { profiles?: PlayerProfile[] }) {
         </div>
       </div>
       {phase === "reveal" && (
-        <p className="ud-box-caption">Las Upper Deck chocan y revelan cada deporte con su logo y rareza.</p>
+        <p className="ud-box-caption">
+          Pack de pelea: las Upper Deck chocan en el ring y revelan fútbol, básquet, box y flag.
+        </p>
       )}
       {opened && phase === "reveal" && (
         <button className="btn btn-outline" type="button" onClick={() => setOpened(false)}>
-          Reiniciar box
+          Otra pelea
         </button>
       )}
     </section>
