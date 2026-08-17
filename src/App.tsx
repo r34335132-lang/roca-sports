@@ -12,6 +12,7 @@ import { JugadorPage } from "@/pages/JugadorPage";
 import { AdminDashboard } from "@/pages/dashboard/AdminDashboard";
 import { OwnerDashboard } from "@/pages/dashboard/OwnerDashboard";
 import { PlayerDashboard } from "@/pages/dashboard/PlayerDashboard";
+import { DashboardHome } from "@/pages/dashboard/DashboardHome";
 
 export default function App() {
   return (
@@ -27,6 +28,7 @@ export default function App() {
           <Route path="/crear-liga" element={<CreateLeaguePage />} />
           <Route path="/box" element={<BoxPage />} />
           <Route path="/jugador/:id" element={<JugadorPage />} />
+          <Route path="/dashboard" element={<DashboardHome />} />
           <Route path="/dashboard/admin" element={<AdminDashboard />} />
           <Route path="/dashboard/dueno" element={<OwnerDashboard />} />
           <Route path="/dashboard/jugador" element={<PlayerDashboard />} />

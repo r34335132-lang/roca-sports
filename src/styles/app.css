@@ -1501,6 +1501,25 @@ th {
   margin-bottom: 14px;
 }
 
+.admin-overview {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.hq-leagues {
+  margin-bottom: 22px;
+}
+
+.hq-leagues .league-cards {
+  margin-top: 14px;
+}
+
+.hq-leagues small {
+  position: relative;
+  z-index: 1;
+  color: var(--lime);
+  font-weight: 800;
+}
+
 /* Hook cards + news */
 .hook-card {
   isolation: isolate;
@@ -1716,7 +1735,8 @@ th {
 @media (max-width: 1100px) {
   .finance-hero,
   .collab-grid,
-  .news-grid {
+  .news-grid,
+  .admin-overview {
     grid-template-columns: 1fr 1fr;
   }
 }

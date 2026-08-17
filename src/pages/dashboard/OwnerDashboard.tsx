@@ -20,7 +20,7 @@ import {
 import type { Matchday, Player, PlayerPayment, Team } from "@/lib/types";
 
 export function OwnerDashboard() {
-  const { user, ownedLeagues, configured, refreshRoles } = useAuth();
+  const { user, role, ownedLeagues, configured, refreshRoles, loading, rolesReady } = useAuth();
   const [params] = useSearchParams();
   const initial = params.get("liga") ?? ownedLeagues[0]?.id ?? "";
   const [leagueId, setLeagueId] = useState(initial);
@@ -116,7 +116,18 @@ export function OwnerDashboard() {
       </>
     );
   }
+  if (loading || !rolesReady) {
+    return (
+      <>
+        <SiteHeader />
+        <main className="section-pad">
+          <p className="muted">Cargando tu liga…</p>
+        </main>
+      </>
+    );
+  }
   if (!user) return <Navigate to="/auth" replace />;
+  if (role === "admin") return <Navigate to="/dashboard/admin" replace />;
 
   if (!league) {
     return (

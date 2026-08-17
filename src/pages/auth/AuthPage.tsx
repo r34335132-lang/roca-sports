@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { SiteFooter, SiteHeader } from "@/components/layout/SiteHeader";
 import { useAuth } from "@/context/AuthContext";
+import { dashboardPath } from "@/lib/roles";
 
 export function AuthPage() {
   const { signIn, signUp, configured } = useAuth();
@@ -18,9 +19,11 @@ export function AuthPage() {
     setError(null);
     setBusy(true);
     try {
-      if (mode === "login") await signIn(email, password);
-      else await signUp(email, password, fullName);
-      navigate("/dashboard/dueno");
+      const nextRole =
+        mode === "login"
+          ? await signIn(email, password)
+          : await signUp(email, password, fullName);
+      navigate(dashboardPath(nextRole), { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : "No se pudo autenticar");
     } finally {
@@ -92,11 +95,12 @@ export function AuthPage() {
             </label>
             {error && <p className="form-error">{error}</p>}
             <button className="btn btn-primary" type="submit" disabled={busy || !configured}>
-              {busy ? "Espera..." : mode === "login" ? "Entrar" : "Registrarme"}
+              {busy ? "Entrando..." : mode === "login" ? "Entrar" : "Registrarme"}
             </button>
           </form>
           <p className="muted">
-            ¿Dueño de liga? Después de entrar ve a <Link to="/crear-liga">Crear liga</Link>.
+            El admin entra al centro de operaciones. El dueño, a su liga. El jugador, a su
+            credencial.
           </p>
         </div>
       </main>

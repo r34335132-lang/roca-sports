@@ -3,7 +3,7 @@ import { Link, NavLink } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 
 export function SiteHeader() {
-  const { user, role, signOut } = useAuth();
+  const { user, role, signOut, destPath } = useAuth();
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -14,12 +14,7 @@ export function SiteHeader() {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  const dashPath =
-    role === "admin"
-      ? "/dashboard/admin"
-      : role === "player"
-        ? "/dashboard/jugador"
-        : "/dashboard/dueno";
+  const dashPath = destPath === "/auth" ? "/dashboard" : destPath;
 
   return (
     <header className={`site-header ${open ? "nav-open" : ""}`} id="inicio">

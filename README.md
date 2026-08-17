@@ -9,17 +9,21 @@ Web app React (Vite) con el look visual de ROCA Sports y las mismas tablas Supab
 ```env
 VITE_SUPABASE_URL=https://TU-PROYECTO.supabase.co
 VITE_SUPABASE_ANON_KEY=TU_ANON_KEY
-VITE_ADMIN_EMAILS=tu-admin@email.com
 VITE_DEFAULT_COMMISSION_PCT=50
 ```
 
 2. En Supabase, asegúrate de tener las migraciones de Los Rafas (`leagues`, `teams`, `players`, `player_stats`, `card_templates`, `player_cards`, `sports_matches`, etc.).
 
-3. Corre la migración extra de ROCA:
+3. Corre las migraciones extra de ROCA:
 
-`supabase/migrations/202608060001_roca_payments_matchdays.sql`
+- `supabase/migrations/202608060001_roca_payments_matchdays.sql`
+- `supabase/migrations/202608170002_admin_profiles_collaborators.sql`
 
-Eso agrega `league_pricing`, `player_payments`, `matchdays`, `team_of_week`.
+Eso agrega pagos, jornadas, `profiles.role` y colaboradores. Para hacer admin a alguien:
+
+```sql
+update public.profiles set role = 'admin' where lower(email) = lower('tu@email.com');
+```
 
 4. Instala y corre:
 
@@ -32,7 +36,7 @@ npm run dev
 
 | Rol | Cómo |
 |---|---|
-| **Admin** | Email en `VITE_ADMIN_EMAILS` → `/dashboard/admin` |
+| **Admin** | `profiles.role = 'admin'` en la DB → `/dashboard/admin` |
 | **Dueño** | Crea liga (`owner_id`) → `/dashboard/dueno` |
 | **Jugador** | `players.auth_user_id` vinculado → `/dashboard/jugador` + credencial |
 

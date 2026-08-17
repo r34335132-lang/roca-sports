@@ -10,14 +10,6 @@ export const supabase: SupabaseClient = createClient(
   anon || "placeholder-anon-key",
 );
 
-export function getAdminEmails(): string[] {
-  const raw = (import.meta.env.VITE_ADMIN_EMAILS as string | undefined) ?? "";
-  return raw
-    .split(",")
-    .map((e) => e.trim().toLowerCase())
-    .filter(Boolean);
-}
-
 export function getDefaultCommissionPct(): number {
   const raw = Number(import.meta.env.VITE_DEFAULT_COMMISSION_PCT ?? 50);
   return Number.isFinite(raw) ? raw : 50;

@@ -425,6 +425,14 @@ export async function countAllPlayers() {
   return count ?? 0;
 }
 
+export async function countAllTeams() {
+  const { count, error } = await supabase
+    .from("teams")
+    .select("id", { count: "exact", head: true });
+  if (error) return 0;
+  return count ?? 0;
+}
+
 export async function uploadLeagueAsset(file: File, folder: string) {
   const ext = file.name.split(".").pop() || "jpg";
   const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
