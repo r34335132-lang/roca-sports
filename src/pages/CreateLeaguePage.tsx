@@ -2,6 +2,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { SiteFooter, SiteHeader } from "@/components/layout/SiteHeader";
 import { PlayerCardPreview } from "@/components/credentials/PlayerCardPreview";
+import { PlayerCredentialCard } from "@/components/credentials/PlayerCredentialCard";
 import { useAuth } from "@/context/AuthContext";
 import { createLeague, slugify, uploadLeagueAsset } from "@/lib/services/leagues";
 import { getSportCardConfig } from "@/lib/cardSportConfig";
@@ -12,7 +13,7 @@ const CATEGORIES: LeagueCategory[] = ["varonil", "femenil", "mixto", "infantil",
 const STYLES: VisualStyle[] = ["upper_deck", "modern", "urban", "minimal", "classic"];
 
 export function CreateLeaguePage() {
-  const { user, configured, refreshRoles } = useAuth();
+  const { user, role, configured, refreshRoles } = useAuth();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [busy, setBusy] = useState(false);
@@ -28,9 +29,9 @@ export function CreateLeaguePage() {
     description: "",
     logo_url: null,
     banner_url: null,
-    primary_color: "#b9ff00",
-    secondary_color: "#0a0d0f",
-    accent_color: "#ddff3e",
+    primary_color: "#121212",
+    secondary_color: "#333333",
+    accent_color: "#b9ff00",
     visual_style: "upper_deck",
     public_profiles_enabled: true,
   });
@@ -40,7 +41,6 @@ export function CreateLeaguePage() {
     setForm((f) => ({
       ...f,
       accent_color: cfg.accent,
-      primary_color: cfg.accent,
     }));
   }, [form.sport]);
 
@@ -130,7 +130,7 @@ export function CreateLeaguePage() {
         slug: form.slug || slugify(form.name),
       });
       await refreshRoles();
-      navigate(`/dashboard/dueno?liga=${league.id}`);
+      navigate(role === "admin" ? "/dashboard/admin" : `/dashboard/dueno?liga=${league.id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "No se pudo crear la liga");
     } finally {
@@ -257,15 +257,21 @@ export function CreateLeaguePage() {
 
             {step === 2 && (
               <>
-                <h3>Branding</h3>
+                <h3>Branding del torneo</h3>
+                <p className="muted">
+                  El logo de tu liga sale en la credencial. ROCA Sport aparece como quien impulsa el torneo.
+                </p>
                 <label>
-                  Logo
+                  Logo del torneo
                   <input
                     type="file"
                     accept="image/*"
                     onChange={(e) => void onUpload(e.target.files?.[0] ?? null, "logo_url")}
                   />
                 </label>
+                {form.logo_url && (
+                  <img className="league-logo" src={form.logo_url} alt="Logo de la liga" />
+                )}
                 <label>
                   Banner
                   <input
@@ -282,6 +288,7 @@ export function CreateLeaguePage() {
                       value={form.primary_color}
                       onChange={(e) => setForm({ ...form, primary_color: e.target.value })}
                     />
+                    <small>Fondo de la credencial</small>
                   </label>
                   <label>
                     Secundario
@@ -290,6 +297,7 @@ export function CreateLeaguePage() {
                       value={form.secondary_color}
                       onChange={(e) => setForm({ ...form, secondary_color: e.target.value })}
                     />
+                    <small>Placas y barra de stats</small>
                   </label>
                   <label>
                     Acento
@@ -298,6 +306,7 @@ export function CreateLeaguePage() {
                       value={form.accent_color}
                       onChange={(e) => setForm({ ...form, accent_color: e.target.value })}
                     />
+                    <small>Bordes y highlights</small>
                   </label>
                 </div>
                 <label>
@@ -320,8 +329,10 @@ export function CreateLeaguePage() {
 
             {step === 3 && (
               <>
-                <h3>Preview Upper Deck</h3>
-                <p className="muted">Así se verá la carta premium de tus jugadores.</p>
+                <h3>Preview de credencial</h3>
+                <p className="muted">
+                  La credencial muestra stats, el logo de tu torneo y el de ROCA Sport.
+                </p>
               </>
             )}
 
@@ -366,6 +377,7 @@ export function CreateLeaguePage() {
           </div>
 
           <div className="preview-pane">
+            <PlayerCredentialCard profile={demoProfile} />
             <PlayerCardPreview profile={demoProfile} />
             <Link className="text-link" to="/box">
               Ver animación del box →

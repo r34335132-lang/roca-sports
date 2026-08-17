@@ -496,7 +496,7 @@ input[type="color"] {
   height: 100%;
   overflow: hidden;
   border-radius: 9px;
-  background: #0b0d10;
+  background: var(--ud-primary, #0b0d10);
 }
 
 .prizm-photo,
@@ -554,6 +554,16 @@ input[type="color"] {
   font-size: 10px;
   font-weight: 900;
   letter-spacing: 0.16em;
+  max-width: 58%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.prizm-top-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .prizm-parallel {
@@ -626,7 +636,7 @@ input[type="color"] {
   z-index: 2;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  background: #0a0c0e;
+  background: var(--ud-secondary, #0a0c0e);
   border-top: 1px solid color-mix(in srgb, var(--ud-accent) 45%, transparent);
 }
 
@@ -1746,6 +1756,18 @@ th {
   margin-top: 14px;
 }
 
+button.league-card {
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+
+.league-card.is-selected {
+  box-shadow: 0 0 0 2px var(--lime), 0 12px 28px rgba(0, 0, 0, 0.35);
+}
+
 .hq-leagues small {
   position: relative;
   z-index: 1;
@@ -2104,7 +2126,11 @@ th {
   border: 1px solid color-mix(in srgb, var(--pass-accent) 45%, white 10%);
   border-radius: 18px;
   background:
-    linear-gradient(160deg, color-mix(in srgb, var(--pass-primary) 70%, #050505), #07090a);
+    linear-gradient(
+      160deg,
+      color-mix(in srgb, var(--pass-primary) 82%, #050505),
+      color-mix(in srgb, var(--pass-secondary, #07090a) 55%, #050505)
+    );
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4);
 }
 
@@ -2133,6 +2159,65 @@ th {
   display: flex;
   gap: 10px;
   align-items: center;
+  min-width: 0;
+}
+
+.pass-roca {
+  display: grid;
+  justify-items: end;
+  gap: 4px;
+}
+
+.league-mark,
+.roca-logo {
+  display: block;
+  object-fit: contain;
+}
+
+.league-mark {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid color-mix(in srgb, var(--pass-accent, var(--ud-accent, #b9ff00)) 40%, transparent);
+}
+
+.league-mark.xs {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+}
+
+.league-mark.is-fallback {
+  display: grid;
+  place-items: center;
+  color: var(--pass-accent, #b9ff00);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+
+.roca-logo {
+  height: 42px;
+  width: auto;
+  max-width: 92px;
+  mix-blend-mode: lighten;
+}
+
+.roca-logo.xs {
+  height: 36px;
+  max-width: 72px;
+}
+
+.roca-logo.sm {
+  height: 48px;
+  max-width: 96px;
+}
+
+.roca-logo.prizm {
+  height: 28px;
+  max-width: 56px;
 }
 
 .pass-brand .sport-mark {
@@ -2235,6 +2320,54 @@ th {
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+.pass-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0 18px;
+  border: 1px solid color-mix(in srgb, var(--pass-accent) 35%, transparent);
+  border-radius: 10px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--pass-secondary, #111) 70%, #050505);
+}
+
+.pass-stats div {
+  display: grid;
+  gap: 2px;
+  padding: 8px 6px;
+  text-align: center;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pass-stats div:first-child {
+  border-left: 0;
+}
+
+.pass-stats span {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.pass-stats i {
+  color: var(--pass-accent);
+  font-family: Impact, "Arial Black", sans-serif;
+  font-size: 20px;
+  font-style: italic;
+  line-height: 1;
+}
+
+.powered-line {
+  display: block;
+  margin-top: 6px;
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
 .pass-foot code {
   display: block;
   margin-top: 4px;
@@ -2273,6 +2406,115 @@ th {
 @media (max-width: 900px) {
   .studio-grid,
   .pass-body {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cred-stats-board {
+  margin-top: 18px;
+}
+
+.cred-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.cred-stats-grid article {
+  padding: 12px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel-soft);
+  text-align: center;
+}
+
+.cred-stats-grid span {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.cred-stats-grid strong {
+  display: block;
+  margin-top: 6px;
+  color: var(--lime);
+  font-family: Impact, "Arial Black", sans-serif;
+  font-size: 28px;
+  font-style: italic;
+  line-height: 1;
+}
+
+.league-brand-editor h4 {
+  margin: 18px 0 10px;
+}
+
+.brand-uploads {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.brand-preview-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.banner-thumb {
+  width: 100%;
+  max-height: 88px;
+  margin-top: 8px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.powered-by-note {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #050505;
+}
+
+.powered-by-note span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.color-fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.color-fields small,
+.form-row small {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.brand-live-preview {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+@media (max-width: 900px) {
+  .brand-uploads,
+  .color-fields,
+  .cred-stats-grid {
     grid-template-columns: 1fr;
   }
 }

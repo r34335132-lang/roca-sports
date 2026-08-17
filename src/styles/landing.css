@@ -83,11 +83,25 @@ img {
 .brand,
 .footer-brand {
   display: inline-flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
   width: max-content;
   color: inherit;
   line-height: 0.78;
   text-decoration: none;
+}
+
+.brand-logo {
+  height: 58px;
+  width: auto;
+  max-width: 168px;
+  object-fit: contain;
+  mix-blend-mode: lighten;
+}
+
+.brand-logo.footer {
+  height: 72px;
+  max-width: 200px;
 }
 
 .brand-roca,
@@ -281,8 +295,16 @@ svg {
 .hero-logo {
   display: inline-flex;
   flex-direction: column;
-  margin-bottom: clamp(24px, 4vw, 42px);
+  margin-bottom: clamp(18px, 3vw, 32px);
   line-height: 0.72;
+}
+
+.hero-logo-img {
+  height: clamp(92px, 14vw, 160px);
+  width: auto;
+  max-width: min(100%, 280px);
+  object-fit: contain;
+  mix-blend-mode: lighten;
 }
 
 .hero-logo span {
@@ -1765,6 +1787,11 @@ tbody tr:hover {
   .brand-roca,
   .footer-brand .brand-roca {
     font-size: 34px;
+  }
+
+  .brand-logo {
+    height: 48px;
+    max-width: 140px;
   }
 
   .brand-sports,

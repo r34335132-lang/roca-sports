@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { RocaLogo } from "@/components/brand/RocaLogo";
 import { SiteFooter, SiteHeader } from "@/components/layout/SiteHeader";
 import { UpperDeckBox } from "@/components/box/UpperDeckBox";
 
@@ -67,9 +68,8 @@ export function LandingPage() {
           </div>
           <div className="hero-inner">
             <div className="hero-copy">
-              <div className="hero-logo" aria-hidden="true">
-                <span>ROCA</span>
-                <strong>Sports</strong>
+              <div className="hero-logo">
+                <RocaLogo className="hero-logo-img" />
               </div>
               <h1 id="hero-title">
                 Más que ligas,

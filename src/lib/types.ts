@@ -241,6 +241,26 @@ export type PlayerInput = {
   status?: "active" | "pending" | "suspended";
 };
 
+export const SPORT_OPTIONS: SportType[] = [
+  "soccer",
+  "basketball",
+  "boxing",
+  "flag",
+  "baseball",
+  "volleyball",
+  "cycling",
+  "other",
+];
+
+export const CATEGORY_OPTIONS: LeagueCategory[] = [
+  "varonil",
+  "femenil",
+  "mixto",
+  "infantil",
+  "juvenil",
+  "libre",
+];
+
 export const SPORT_LABELS: Record<SportType | string, string> = {
   soccer: "Fútbol",
   flag: "Flag Football",

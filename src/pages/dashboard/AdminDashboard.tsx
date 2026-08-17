@@ -29,7 +29,7 @@ import {
   fetchPlatformCollaborators,
   savePlatformCollaborators,
 } from "@/lib/services/platform";
-import { PlayerStudio } from "@/components/players/PlayerStudio";
+import { LeagueWorkspace } from "@/components/leagues/LeagueWorkspace";
 import { getDefaultCommissionPct } from "@/lib/supabase";
 import type { League, LeaguePricing, PlayerPayment } from "@/lib/types";
 import { SPORT_IMAGES, SPORT_LABELS } from "@/lib/types";
@@ -47,6 +47,7 @@ export function AdminDashboard() {
   const [msg, setMsg] = useState<string | null>(null);
   const [savingPct, setSavingPct] = useState(false);
   const [collabDb, setCollabDb] = useState(false);
+  const [selectedLeagueId, setSelectedLeagueId] = useState("");
 
   const load = async () => {
     try {
@@ -61,6 +62,7 @@ export function AdminDashboard() {
       setPayments(p);
       setPlayerCount(c);
       setTeamCount(teams);
+      setSelectedLeagueId((current) => current || l[0]?.id || "");
       if (collabs) {
         setCollaborators(collabs);
         setCollabDb(true);
@@ -117,6 +119,7 @@ export function AdminDashboard() {
     [collaborators, finance.platform],
   );
   const pctOk = Math.abs(splits.totalPct - 100) < 0.5;
+  const selectedLeague = leagues.find((l) => l.id === selectedLeagueId) ?? leagues[0] ?? null;
 
   const updateCollaborator = (id: string, patch: Partial<Collaborator>) => {
     persistCollaborators(
@@ -369,23 +372,44 @@ export function AdminDashboard() {
 
         <section className="dash-panel hq-leagues">
           <div className="row-between">
-            <h3>Todas las ligas</h3>
-            <span className="muted">{leagues.length} en la base de datos</span>
+            <div>
+              <h3>Editar cualquier liga</h3>
+              <p className="muted">
+                Elige un torneo para cambiar logo, colores, jugadores, jornadas y cuotas.
+              </p>
+            </div>
+            <div className="row-between">
+              <select
+                value={selectedLeagueId}
+                onChange={(e) => setSelectedLeagueId(e.target.value)}
+              >
+                {leagues.map((l) => (
+                  <option key={l.id} value={l.id}>
+                    {l.name}
+                  </option>
+                ))}
+              </select>
+              <Link className="btn btn-outline" to="/crear-liga">
+                Crear liga
+              </Link>
+            </div>
           </div>
           <div className="league-cards">
             {leagues.map((league) => {
               const row = finance.rows.find((r) => r.leagueId === league.id);
+              const active = league.id === selectedLeagueId;
               return (
-                <Link
+                <button
                   key={league.id}
-                  to={`/liga/${league.slug || league.id}`}
-                  className="league-card"
+                  type="button"
+                  className={`league-card ${active ? "is-selected" : ""}`}
                   style={{
                     backgroundImage: `linear-gradient(160deg, rgba(5,7,8,.9), rgba(5,7,8,.55)), url(${
                       league.banner_url || SPORT_IMAGES[league.sport]
                     })`,
-                    borderColor: `${league.accent_color}55`,
+                    borderColor: active ? league.accent_color : `${league.accent_color}55`,
                   }}
+                  onClick={() => setSelectedLeagueId(league.id)}
                 >
                   <p className="eyebrow">{SPORT_LABELS[league.sport] ?? league.sport}</p>
                   <h3>{league.name}</h3>
@@ -395,14 +419,21 @@ export function AdminDashboard() {
                   <small>
                     Ingresó {money(row?.income ?? 0)} · ROCA {money(row?.platform ?? 0)}
                   </small>
-                </Link>
+                </button>
               );
             })}
             {leagues.length === 0 && <p className="muted">Aún no hay ligas en la base de datos.</p>}
           </div>
         </section>
 
-        <PlayerStudio leagues={leagues} />
+        {selectedLeague && (
+          <LeagueWorkspace
+            league={selectedLeague}
+            onLeagueSaved={async (updated) => {
+              setLeagues((list) => list.map((row) => (row.id === updated.id ? updated : row)));
+            }}
+          />
+        )}
 
         <div className="dash-split">
           <section className="dash-panel">

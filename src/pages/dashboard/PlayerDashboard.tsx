@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { SiteFooter, SiteHeader } from "@/components/layout/SiteHeader";
 import { CredentialFlip } from "@/components/credentials/CredentialFlip";
+import { PlayerStatsBoard } from "@/components/credentials/CredentialStats";
 import { useAuth } from "@/context/AuthContext";
 import { fetchPlayerCredential } from "@/lib/services/leagues";
 import type { CardTemplate, PlayerProfile } from "@/lib/types";
@@ -110,6 +111,7 @@ export function PlayerDashboard() {
                   <span>{profile.league.sport}</span>
                 </li>
               </ul>
+              <PlayerStatsBoard profile={profile} />
               <Link className="text-link" to={`/jugador/${profile.id}`}>
                 Abrir perfil público →
               </Link>

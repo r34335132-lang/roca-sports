@@ -1,11 +1,14 @@
+import { LeagueMark, RocaLogo } from "@/components/brand/RocaLogo";
+import { CredentialStatsStrip } from "@/components/credentials/CredentialStats";
+import { hexColor } from "@/lib/brand";
 import { SPORT_ATHLETES, SPORT_LABELS } from "@/lib/types";
 import type { PlayerProfile } from "@/lib/types";
 import { QRCredentialBlock } from "./QRCredentialBlock";
-import { SportMark } from "./SportMark";
 
 export function PlayerCredentialCard({ profile }: { profile: PlayerProfile }) {
-  const accent = profile.league.accent_color ?? "#b9ff00";
-  const primary = profile.league.primary_color ?? "#111719";
+  const accent = hexColor(profile.league.accent_color, "#b9ff00");
+  const primary = hexColor(profile.league.primary_color, "#121212");
+  const secondary = hexColor(profile.league.secondary_color, "#333333");
   const photo =
     profile.photo_url || SPORT_ATHLETES[profile.league.sport] || SPORT_ATHLETES.other;
 
@@ -15,18 +18,22 @@ export function PlayerCredentialCard({ profile }: { profile: PlayerProfile }) {
       style={{
         ["--pass-accent" as string]: accent,
         ["--pass-primary" as string]: primary,
+        ["--pass-secondary" as string]: secondary,
       }}
     >
       <div className="pass-holo" aria-hidden="true" />
       <header className="pass-head">
         <div className="pass-brand">
-          <SportMark sport={profile.league.sport} />
+          <LeagueMark league={profile.league} />
           <div>
-            <span>ROCA SPORTS</span>
+            <span>{profile.league.name}</span>
             <strong>PLAYER PASS</strong>
           </div>
         </div>
-        <em>{profile.league.season}</em>
+        <div className="pass-roca">
+          <RocaLogo className="roca-logo xs" />
+          <em>{profile.league.season}</em>
+        </div>
       </header>
       <div className="pass-body">
         <div className="pass-photo">
@@ -56,11 +63,13 @@ export function PlayerCredentialCard({ profile }: { profile: PlayerProfile }) {
           </ul>
         </div>
       </div>
+      <CredentialStatsStrip profile={profile} />
       <footer className="pass-foot">
         <QRCredentialBlock code={profile.credential_code} accent={accent} size={64} />
         <div>
           <span>ID de credencial</span>
           <code>{profile.credential_code}</code>
+          <small className="powered-line">Impulsado por ROCA Sport</small>
         </div>
       </footer>
     </article>

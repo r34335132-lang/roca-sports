@@ -61,6 +61,7 @@ export function PlayerStudio({
   }, [leagueId]);
 
   const selectedTeam = teams.find((t) => t.id === form.team_id) ?? null;
+  const editingPlayer = players.find((p) => p.id === editingId) ?? null;
 
   const preview: PlayerProfile | null = useMemo(() => {
     if (!league) return null;
@@ -81,9 +82,9 @@ export function PlayerStudio({
       updated_at: "",
       league,
       team: selectedTeam,
-      stats: null,
+      stats: editingPlayer?.player_stats?.[0] ?? null,
     };
-  }, [league, form, selectedTeam, editingId, positions]);
+  }, [league, form, selectedTeam, editingId, positions, editingPlayer]);
 
   const fillPlayer = (p: Player) => {
     setEditingId(p.id);

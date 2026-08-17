@@ -71,9 +71,9 @@ export const SPORT_CARD_CONFIG: Record<SportType | "default", SportCardConfig> =
     rarity: "KNOCKOUT",
     variant: "mvp",
     getStats: (profile) => [
-      { key: "knockouts", label: "KO", value: stat(profile, "mvp_count") || 4 },
-      { key: "wins", label: "W", value: stat(profile, "games") || 8 },
-      { key: "rounds", label: "RDS", value: stat(profile, "points") || 12 },
+      { key: "knockouts", label: "KO", value: stat(profile, "mvp_count") },
+      { key: "wins", label: "W", value: stat(profile, "games") },
+      { key: "rounds", label: "RDS", value: stat(profile, "points") },
     ],
   },
   baseball: {

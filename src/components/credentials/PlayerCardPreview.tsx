@@ -1,8 +1,9 @@
+import { LeagueMark, RocaLogo } from "@/components/brand/RocaLogo";
+import { hexColor } from "@/lib/brand";
 import { getSportCardConfig } from "@/lib/cardSportConfig";
 import { splitPlayerName } from "@/lib/playerStudio";
 import { SPORT_ATHLETES, SPORT_LABELS } from "@/lib/types";
 import type { CardTemplate, PlayerProfile } from "@/lib/types";
-import { SportMark } from "./SportMark";
 
 export function PlayerCardPreview({
   profile,
@@ -14,7 +15,9 @@ export function PlayerCardPreview({
   const league = profile.league;
   const sport = league.sport || "other";
   const sportConfig = getSportCardConfig(sport);
-  const accent = league.accent_color ?? sportConfig.accent;
+  const accent = hexColor(league.accent_color, sportConfig.accent);
+  const primary = hexColor(league.primary_color, "#121212");
+  const secondary = hexColor(league.secondary_color, "#0a0c0e");
   const stats = sportConfig.getStats(profile).slice(0, 3);
   const templateType = template?.template_type ?? "upper_deck_elite";
   const isMvp = templateType === "mvp_edition" || sportConfig.variant === "mvp";
@@ -27,7 +30,11 @@ export function PlayerCardPreview({
   return (
     <article
       className={`prizm-card sport-${sport} ${isMvp ? "is-gold" : ""} ${isRookie ? "is-rookie" : ""}`}
-      style={{ ["--ud-accent" as string]: accent }}
+      style={{
+        ["--ud-accent" as string]: accent,
+        ["--ud-primary" as string]: primary,
+        ["--ud-secondary" as string]: secondary,
+      }}
     >
       <div className="prizm-chrome">
         <div className="prizm-cut">
@@ -38,10 +45,13 @@ export function PlayerCardPreview({
           </div>
           <div className="prizm-top">
             <span className="prizm-brand">
-              <SportMark sport={sport} />
-              ROCA
+              <LeagueMark league={league} className="league-mark xs" />
+              {league.name.slice(0, 12)}
             </span>
-            <span className="prizm-parallel">{rarity}</span>
+            <span className="prizm-top-right">
+              <RocaLogo className="roca-logo prizm" />
+              <span className="prizm-parallel">{rarity}</span>
+            </span>
           </div>
           <span className="prizm-num">{profile.number}</span>
           <div className="prizm-plate">

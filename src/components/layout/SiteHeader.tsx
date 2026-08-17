@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
+import { RocaLogo } from "@/components/brand/RocaLogo";
 import { useAuth } from "@/context/AuthContext";
 
 export function SiteHeader() {
@@ -19,8 +20,7 @@ export function SiteHeader() {
   return (
     <header className={`site-header ${open ? "nav-open" : ""}`} id="inicio">
       <Link className="brand" to="/" aria-label="ROCA Sports inicio">
-        <span className="brand-roca">ROCA</span>
-        <span className="brand-sports">sports</span>
+        <RocaLogo className="brand-logo" />
       </Link>
 
       <button
@@ -80,8 +80,7 @@ export function SiteFooter() {
   return (
     <footer className="site-footer">
       <div className="footer-brand">
-        <span className="brand-roca">ROCA</span>
-        <span className="brand-sports">sports</span>
+        <RocaLogo className="brand-logo footer" />
       </div>
       <p>Ligas · Credenciales Upper Deck · Comunidad</p>
       <div className="footer-links">

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { SiteFooter, SiteHeader } from "@/components/layout/SiteHeader";
 import { CredentialFlip } from "@/components/credentials/CredentialFlip";
+import { PlayerStatsBoard } from "@/components/credentials/CredentialStats";
 import { fetchPlayerCredential } from "@/lib/services/leagues";
 import type { CardTemplate, PlayerProfile } from "@/lib/types";
 
@@ -39,6 +40,7 @@ export function JugadorPage() {
                 #{profile.number} · {profile.position} · {profile.team?.name ?? "Sin equipo"}
               </p>
               <code>{profile.credential_code}</code>
+              <PlayerStatsBoard profile={profile} />
             </div>
           </div>
         )}
