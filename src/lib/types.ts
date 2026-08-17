@@ -269,3 +269,21 @@ export const SPORT_IMAGES: Record<string, string> = {
   other:
     "https://images.unsplash.com/photo-1461896833974-ffe9f0cb4a1e?auto=format&fit=crop&w=1400&q=80",
 };
+
+export const SPORT_ATHLETES: Record<string, string> = {
+  soccer:
+    "https://images.unsplash.com/photo-1606925797300-0b35e9d1794d?auto=format&fit=crop&w=900&q=80",
+  basketball:
+    "https://images.unsplash.com/photo-1519861531473-04c8755e09e8?auto=format&fit=crop&w=900&q=80",
+  boxing:
+    "https://images.unsplash.com/photo-1599058917212-d750089bc07e?auto=format&fit=crop&w=900&q=80",
+  flag: "https://images.unsplash.com/photo-1560272564-c83b66b1ad12?auto=format&fit=crop&w=900&q=80",
+  baseball:
+    "https://images.unsplash.com/photo-1566577739112-5180d4bf9390?auto=format&fit=crop&w=900&q=80",
+  volleyball:
+    "https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?auto=format&fit=crop&w=900&q=80",
+  cycling:
+    "https://images.unsplash.com/photo-1517649763962-0c623066027b?auto=format&fit=crop&w=900&q=80",
+  other:
+    "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=900&q=80",
+};
