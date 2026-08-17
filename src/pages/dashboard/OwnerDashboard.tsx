@@ -2,11 +2,10 @@ import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { SiteFooter, SiteHeader } from "@/components/layout/SiteHeader";
 import { useAuth } from "@/context/AuthContext";
+import { PlayerStudio } from "@/components/players/PlayerStudio";
 import { calcBudget, clampPct, money, sumPayments } from "@/lib/finance";
 import {
   createMatchday,
-  createPlayer,
-  createTeam,
   fetchMatchdays,
   fetchPaymentsByLeague,
   fetchPlayersByLeague,
@@ -35,13 +34,6 @@ export function OwnerDashboard() {
   const [msg, setMsg] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const [teamName, setTeamName] = useState("");
-  const [playerForm, setPlayerForm] = useState({
-    full_name: "",
-    number: "10",
-    position: "DEL",
-    team_id: "",
-  });
   const [matchdayForm, setMatchdayForm] = useState({ number: 1, title: "Jornada 1" });
   const [totwIds, setTotwIds] = useState<string[]>([]);
   const [brand, setBrand] = useState({
@@ -290,97 +282,9 @@ export function OwnerDashboard() {
               Guardar pricing
             </button>
           </section>
-
-          <section className="dash-panel">
-            <h3>Subir equipo</h3>
-            <form
-              onSubmit={async (e: FormEvent) => {
-                e.preventDefault();
-                await createTeam({ league_id: league.id, name: teamName });
-                setTeamName("");
-                await load(league.id);
-                setMsg("Equipo creado");
-              }}
-            >
-              <label>
-                Nombre del equipo
-                <input
-                  required
-                  value={teamName}
-                  onChange={(e) => setTeamName(e.target.value)}
-                />
-              </label>
-              <button className="btn btn-primary" type="submit">
-                Crear equipo
-              </button>
-            </form>
-
-            <h4>Subir jugador</h4>
-            <form
-              onSubmit={async (e: FormEvent) => {
-                e.preventDefault();
-                await createPlayer({
-                  league_id: league.id,
-                  team_id: playerForm.team_id || null,
-                  full_name: playerForm.full_name,
-                  number: playerForm.number,
-                  position: playerForm.position,
-                });
-                setPlayerForm({ ...playerForm, full_name: "" });
-                await load(league.id);
-                setMsg("Jugador creado con credencial");
-              }}
-            >
-              <label>
-                Nombre
-                <input
-                  required
-                  value={playerForm.full_name}
-                  onChange={(e) =>
-                    setPlayerForm({ ...playerForm, full_name: e.target.value })
-                  }
-                />
-              </label>
-              <div className="form-row">
-                <label>
-                  #
-                  <input
-                    required
-                    value={playerForm.number}
-                    onChange={(e) => setPlayerForm({ ...playerForm, number: e.target.value })}
-                  />
-                </label>
-                <label>
-                  Posición
-                  <input
-                    required
-                    value={playerForm.position}
-                    onChange={(e) =>
-                      setPlayerForm({ ...playerForm, position: e.target.value })
-                    }
-                  />
-                </label>
-              </div>
-              <label>
-                Equipo
-                <select
-                  value={playerForm.team_id}
-                  onChange={(e) => setPlayerForm({ ...playerForm, team_id: e.target.value })}
-                >
-                  <option value="">Sin equipo</option>
-                  {teams.map((t) => (
-                    <option key={t.id} value={t.id}>
-                      {t.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <button className="btn btn-primary" type="submit">
-                Crear jugador
-              </button>
-            </form>
-          </section>
         </div>
+
+        <PlayerStudio leagues={[league]} defaultLeagueId={league.id} />
 
         <div className="dash-split">
           <section className="dash-panel">

@@ -29,6 +29,7 @@ import {
   fetchPlatformCollaborators,
   savePlatformCollaborators,
 } from "@/lib/services/platform";
+import { PlayerStudio } from "@/components/players/PlayerStudio";
 import { getDefaultCommissionPct } from "@/lib/supabase";
 import type { League, LeaguePricing, PlayerPayment } from "@/lib/types";
 import { SPORT_IMAGES, SPORT_LABELS } from "@/lib/types";
@@ -400,6 +401,8 @@ export function AdminDashboard() {
             {leagues.length === 0 && <p className="muted">Aún no hay ligas en la base de datos.</p>}
           </div>
         </section>
+
+        <PlayerStudio leagues={leagues} />
 
         <div className="dash-split">
           <section className="dash-panel">

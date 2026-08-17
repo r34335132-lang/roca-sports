@@ -1,6 +1,8 @@
 import { getSportCardConfig } from "@/lib/cardSportConfig";
+import { splitPlayerName } from "@/lib/playerStudio";
 import { SPORT_ATHLETES, SPORT_LABELS } from "@/lib/types";
 import type { CardTemplate, PlayerProfile } from "@/lib/types";
+import { SportMark } from "./SportMark";
 
 export function PlayerCardPreview({
   profile,
@@ -17,53 +19,48 @@ export function PlayerCardPreview({
   const templateType = template?.template_type ?? "upper_deck_elite";
   const isMvp = templateType === "mvp_edition" || sportConfig.variant === "mvp";
   const isRookie = templateType === "rookie_card";
-  const isBoxing = sport === "boxing";
-  const photo =
-    profile.photo_url || SPORT_ATHLETES[sport] || SPORT_ATHLETES.other;
-  const rarity = isBoxing
-    ? "KNOCKOUT"
-    : isMvp
-      ? "MVP"
-      : isRookie
-        ? "ROOKIE"
-        : sportConfig.rarity;
+  const photo = profile.photo_url || SPORT_ATHLETES[sport] || SPORT_ATHLETES.other;
+  const { first, last } = splitPlayerName(profile.full_name);
+  const rarity = isRookie ? "ROOKIE" : isMvp ? "GOLD" : sport === "basketball" ? "PRIZM" : sportConfig.rarity;
+  const serial = profile.credential_code.slice(-4);
 
   return (
     <article
-      className={`ud-card sport-${sport} ${isBoxing ? "is-boxing" : ""} ${isMvp ? "is-mvp" : ""}`}
+      className={`prizm-card sport-${sport} ${isMvp ? "is-gold" : ""} ${isRookie ? "is-rookie" : ""}`}
       style={{ ["--ud-accent" as string]: accent }}
     >
-      <div className="ud-foil">
-        <div className="ud-inner">
-          <div className="ud-hero">
+      <div className="prizm-chrome">
+        <div className="prizm-cut">
+          <div className="prizm-photo">
             <img src={photo} alt={profile.full_name} />
-            <span className="ud-holo" aria-hidden="true" />
-            <span className="ud-grain" aria-hidden="true" />
-            <div className="ud-hero-top">
-              <span className="ud-mark">
-                {sportConfig.icon} ROCA
-              </span>
-              <span className={`ud-rarity ${isMvp || isBoxing ? "gold" : ""}`}>{rarity}</span>
-            </div>
-            <b className="ud-jersey">{profile.number}</b>
-            <div className="ud-id">
-              <em>{SPORT_LABELS[sport] ?? sport}</em>
-              <h3>{profile.full_name}</h3>
-              <p>
-                {profile.position} · {profile.team?.name ?? "Free Agent"}
-              </p>
-            </div>
+            <span className="prizm-refract" aria-hidden="true" />
+            <span className="prizm-court" aria-hidden="true" />
           </div>
-          <div className="ud-bar">
+          <div className="prizm-top">
+            <span className="prizm-brand">
+              <SportMark sport={sport} />
+              ROCA
+            </span>
+            <span className="prizm-parallel">{rarity}</span>
+          </div>
+          <span className="prizm-num">{profile.number}</span>
+          <div className="prizm-plate">
+            <em>
+              {profile.team?.name ?? SPORT_LABELS[sport]} · {profile.position}
+            </em>
+            <strong>{last}</strong>
+            {first && <b>{first}</b>}
+          </div>
+          <div className="prizm-stats">
             {stats.map((item) => (
-              <div key={item.key} className="ud-stat">
+              <div key={item.key}>
                 <span>{item.label}</span>
-                <strong>{item.value}</strong>
+                <i>{item.value}</i>
               </div>
             ))}
-            <div className="ud-year">
-              <span>SZN</span>
-              <strong>{league.season.replace(/[^\d]/g, "").slice(-2) || "26"}</strong>
+            <div>
+              <span>NO.</span>
+              <i>{serial}</i>
             </div>
           </div>
         </div>

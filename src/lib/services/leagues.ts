@@ -180,6 +180,17 @@ export async function createPlayer(input: PlayerInput) {
   return player;
 }
 
+export async function updatePlayer(id: string, input: Partial<PlayerInput>) {
+  const { data, error } = await supabase
+    .from("players")
+    .update({ ...input, updated_at: new Date().toISOString() })
+    .eq("id", id)
+    .select("*")
+    .single();
+  if (error) throw error;
+  return data as Player;
+}
+
 export async function nextCredentialCode(leagueId: string) {
   const league = await fetchLeague(leagueId);
   const prefix = (league?.slug ?? "liga").replace(/-/g, "").slice(0, 6).toUpperCase();

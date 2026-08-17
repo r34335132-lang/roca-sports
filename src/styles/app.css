@@ -466,11 +466,200 @@ input[type="color"] {
   border-radius: 1px;
 }
 
-/* Upper Deck trading card */
-.ud-card {
-  width: min(100%, 340px);
+/* Prizm / Chrome trading card */
+.prizm-card {
+  width: min(100%, 320px);
   aspect-ratio: 2.5 / 3.5;
-  filter: drop-shadow(0 22px 28px rgba(0, 0, 0, 0.55));
+  filter: drop-shadow(0 18px 24px rgba(0, 0, 0, 0.55));
+}
+
+.prizm-chrome {
+  height: 100%;
+  padding: 6px;
+  border-radius: 14px;
+  background:
+    linear-gradient(145deg, #f4f4f4 0%, #9aa0a8 18%, #fff 36%, #6d737c 54%, #dfe3ea 74%, #3f444c 100%);
+}
+
+.prizm-card.is-gold .prizm-chrome {
+  background:
+    linear-gradient(145deg, #fff3c0 0%, #d4a017 22%, #fff 44%, #8a6a10 62%, #f0d36a 82%, #4a3500 100%);
+}
+
+.prizm-card.sport-boxing .prizm-chrome {
+  background:
+    linear-gradient(145deg, #ffd36a 0%, #c1121f 24%, #fff 46%, #7a0b0b 66%, #c9a227 86%, #2a0000 100%);
+}
+
+.prizm-cut {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 9px;
+  background: #0b0d10;
+}
+
+.prizm-photo,
+.prizm-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 18%;
+}
+
+.prizm-refract {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(120deg, transparent 18%, rgba(255, 80, 180, 0.16) 32%, rgba(80, 220, 255, 0.16) 46%, rgba(185, 255, 0, 0.14) 58%, transparent 72%);
+  mix-blend-mode: screen;
+  animation: holo-sweep 5.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.prizm-court {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 118%, transparent 28%, rgba(0, 0, 0, 0.55) 72%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.55));
+  pointer-events: none;
+}
+
+.prizm-card.sport-basketball .prizm-court {
+  background:
+    radial-gradient(circle at 50% 118%, transparent 28%, rgba(0, 0, 0, 0.55) 72%),
+    repeating-linear-gradient(90deg, transparent 0 46px, rgba(255, 255, 255, 0.05) 47px 48px);
+}
+
+.prizm-top {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  left: 10px;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.prizm-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgba(8, 8, 8, 0.72);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+}
+
+.prizm-parallel {
+  padding: 4px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(8, 8, 8, 0.78);
+  color: #f3f3f3;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+}
+
+.prizm-card.is-gold .prizm-parallel {
+  color: #ffd36a;
+  border-color: #c9a227;
+}
+
+.prizm-num {
+  position: absolute;
+  right: 8px;
+  bottom: 92px;
+  z-index: 2;
+  color: rgba(255, 255, 255, 0.18);
+  font-family: Impact, "Arial Black", sans-serif;
+  font-size: clamp(70px, 20vw, 112px);
+  line-height: 0.75;
+  pointer-events: none;
+}
+
+.prizm-plate {
+  position: absolute;
+  right: 0;
+  bottom: 54px;
+  left: 0;
+  z-index: 2;
+  padding: 10px 12px 8px;
+  background: linear-gradient(180deg, transparent, rgba(8, 8, 8, 0.92));
+}
+
+.prizm-plate em {
+  color: var(--ud-accent);
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.prizm-plate strong {
+  display: block;
+  font-family: Impact, "Arial Black", sans-serif;
+  font-size: clamp(26px, 5vw, 38px);
+  font-style: italic;
+  letter-spacing: 0.02em;
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+
+.prizm-plate b {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+}
+
+.prizm-stats {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  background: #0a0c0e;
+  border-top: 1px solid color-mix(in srgb, var(--ud-accent) 45%, transparent);
+}
+
+.prizm-stats div {
+  display: grid;
+  gap: 2px;
+  padding: 8px 4px;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: center;
+}
+
+.prizm-stats div:first-child {
+  border-left: 0;
+}
+
+.prizm-stats span {
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.prizm-stats i {
+  color: #fff;
+  font-family: Impact, "Arial Black", sans-serif;
+  font-size: 18px;
+  font-style: italic;
+  line-height: 1;
+}
+
+@keyframes holo-sweep {
+  0%, 100% { transform: translateX(-18%); opacity: 0.45; }
+  50% { transform: translateX(18%); opacity: 0.9; }
 }
 
 .ud-foil {
@@ -763,26 +952,21 @@ input[type="color"] {
   filter: drop-shadow(0 22px 28px rgba(0, 0, 0, 0.62));
 }
 
-.ud-box-card .ud-card {
+.ud-box-card .prizm-card {
   width: 100%;
 }
 
-.ud-box-card .ud-bar {
-  grid-template-rows: auto;
+.ud-box-card .prizm-plate strong {
+  font-size: 22px;
 }
 
-.ud-box-card .ud-stat strong,
-.ud-box-card .ud-year strong {
-  font-size: 16px;
-}
-
-.ud-box-card .ud-id h3 {
-  font-size: 20px;
-}
-
-.ud-box-card .ud-jersey {
+.ud-box-card .prizm-num {
   font-size: 72px;
-  bottom: 48px;
+  bottom: 78px;
+}
+
+.ud-box-card .prizm-stats i {
+  font-size: 15px;
 }
 
 .ud-box.open .ud-box-card {
@@ -1899,6 +2083,196 @@ th {
 
   .pct-input,
   .collab-pct {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sport-mark {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.pass-card {
+  position: relative;
+  width: min(100%, 380px);
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--pass-accent) 45%, white 10%);
+  border-radius: 18px;
+  background:
+    linear-gradient(160deg, color-mix(in srgb, var(--pass-primary) 70%, #050505), #07090a);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4);
+}
+
+.pass-holo {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 8px;
+  background: linear-gradient(90deg, #7af, var(--pass-accent), #f6c, #ffe27a, #7af);
+}
+
+.pass-head,
+.pass-body,
+.pass-foot {
+  position: relative;
+  z-index: 1;
+}
+
+.pass-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 18px 8px;
+}
+
+.pass-brand {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.pass-brand .sport-mark {
+  width: 28px;
+  height: 28px;
+  color: var(--pass-accent);
+}
+
+.pass-brand span,
+.pass-foot span {
+  display: block;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.pass-brand strong {
+  font-size: 14px;
+  letter-spacing: 0.12em;
+}
+
+.pass-head em {
+  color: var(--pass-accent);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 900;
+}
+
+.pass-body {
+  display: grid;
+  grid-template-columns: 132px 1fr;
+  gap: 14px;
+  padding: 8px 18px 16px;
+}
+
+.pass-photo {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  min-height: 160px;
+  background: #111;
+}
+
+.pass-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pass-photo b {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  color: #fff;
+  font-family: Impact, "Arial Black", sans-serif;
+  font-size: 28px;
+  text-shadow: 0 6px 12px rgba(0, 0, 0, 0.7);
+}
+
+.pass-meta p {
+  margin: 0;
+  color: var(--pass-accent);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.pass-meta h3 {
+  margin: 4px 0 12px;
+  font-size: 24px;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.pass-meta ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.pass-meta li span {
+  display: block;
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.pass-foot {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding: 14px 18px 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pass-foot code {
+  display: block;
+  margin-top: 4px;
+  color: var(--pass-accent);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+}
+
+.player-studio {
+  margin: 28px 0;
+}
+
+.studio-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.9fr) minmax(320px, 1.1fr);
+  gap: 18px;
+  align-items: start;
+  margin-bottom: 18px;
+}
+
+.studio-preview {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+}
+
+.studio-toggles {
+  display: flex;
+  gap: 8px;
+}
+
+.studio-league {
+  min-width: 220px;
+}
+
+@media (max-width: 900px) {
+  .studio-grid,
+  .pass-body {
     grid-template-columns: 1fr;
   }
 }
