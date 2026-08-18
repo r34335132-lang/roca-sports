@@ -570,8 +570,6 @@ export async function saveLeagueStandings(leagueId: string, rows: StandingRow[])
   return (data ?? []) as TeamStanding[];
 }
 
-import type { StandingRow } from "@/lib/standings";
-
 export async function uploadLeagueAsset(file: File, folder: string) {
   const ext = file.name.split(".").pop() || "jpg";
   const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
