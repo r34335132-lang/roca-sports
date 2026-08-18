@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { StandingsTable } from "@/components/leagues/StandingsTable";
 import {
   emptyMatchForm,
   getStatFields,
@@ -19,17 +20,28 @@ import {
   createMatchday,
   createSportsMatch,
   fetchLiveMatches,
+  fetchLeagueStandings,
   fetchMatchdays,
   fetchTeamOfWeek,
+  saveLeagueStandings,
   updateMatchday,
   updateSportsMatch,
   upsertPlayerStats,
   upsertTeamOfWeek,
 } from "@/lib/services/leagues";
-import { SPORT_ATHLETES } from "@/lib/types";
+import {
+  applyStandingValue,
+  buildStandingsTable,
+  computeStandingsFromMatches,
+  finishStanding,
+  sortStandings,
+  suggestPoints,
+  type StandingRow,
+} from "@/lib/standings";
 import type { League, Matchday, Player, PlayerStats, SportsMatch, Team } from "@/lib/types";
+import { SPORT_ATHLETES } from "@/lib/types";
 
-type Tab = "juegos" | "stats" | "totw";
+type Tab = "juegos" | "tabla" | "stats" | "totw";
 
 export function LeagueOpsDesk({
   league,
@@ -49,6 +61,7 @@ export function LeagueOpsDesk({
   const [matchForm, setMatchForm] = useState(emptyMatchForm());
   const [matchdayForm, setMatchdayForm] = useState({ number: 1, title: "Jornada 1" });
   const [statsDraft, setStatsDraft] = useState<Record<string, Record<string, number>>>({});
+  const [standingsDraft, setStandingsDraft] = useState<StandingRow[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
@@ -58,14 +71,16 @@ export function LeagueOpsDesk({
   const teamName = (id: string | null) => teams.find((t) => t.id === id)?.name ?? "TBD";
 
   const loadOps = async () => {
-    const [m, days, totw] = await Promise.all([
+    const [m, days, totw, saved] = await Promise.all([
       fetchLiveMatches(league.id),
       fetchMatchdays(league.id),
       fetchTeamOfWeek(league.id),
+      fetchLeagueStandings(league.id),
     ]);
     setMatches(m);
     setMatchdays(days);
     setTotwIds(totw?.player_ids ?? []);
+    setStandingsDraft(buildStandingsTable(teams, saved, m));
     setMatchdayForm({
       number: (days.at(-1)?.number ?? 0) + 1,
       title: `Jornada ${(days.at(-1)?.number ?? 0) + 1}`,
@@ -77,6 +92,13 @@ export function LeagueOpsDesk({
     setMsg(null);
     void loadOps().catch((e) => setError(String(e.message ?? e)));
   }, [league.id]);
+
+  useEffect(() => {
+    if (!teams.length) return;
+    void fetchLeagueStandings(league.id)
+      .then((saved) => setStandingsDraft(buildStandingsTable(teams, saved, matches)))
+      .catch(() => {});
+  }, [teams]);
 
   useEffect(() => {
     const next: Record<string, Record<string, number>> = {};
@@ -176,21 +198,30 @@ export function LeagueOpsDesk({
     }, "Equipo de la semana publicado.");
   };
 
+  const onSaveStandings = () =>
+    save(async () => {
+      await saveLeagueStandings(
+        league.id,
+        standingsDraft.map((row) => finishStanding(row)),
+      );
+    }, "Tabla de posiciones publicada.");
+
   return (
     <section className="dash-panel ops-desk">
       <div className="ops-head">
         <div>
           <p className="eyebrow">Carga de temporada</p>
-          <h3>Juegos, stats y XI</h3>
+          <h3>Juegos, tabla, stats y XI</h3>
           <p className="muted">
-            El admin o el dueño publican el rol, los números y el equipo de la semana. Eso es lo
-            que ve el jugador en su credencial y en la liga.
+            El admin carga el rol, la tabla de posiciones, las stats y el equipo de la semana.
+            Eso es lo que se ve en el deporte y en las credenciales.
           </p>
         </div>
         <div className="ops-tabs">
           {(
             [
               ["juegos", "Rol de juegos"],
+              ["tabla", "Tabla"],
               ["stats", "Estadísticas"],
               ["totw", "Equipo de la semana"],
             ] as const
@@ -440,6 +471,74 @@ export function LeagueOpsDesk({
               </article>
             ))}
           </div>
+        </div>
+      )}
+
+      {tab === "tabla" && (
+        <div className="tabla-desk">
+          {teams.length === 0 ? (
+            <p className="muted">Crea equipos para armar la tabla de posiciones.</p>
+          ) : (
+            <>
+              <p className="muted">
+                En fútbol la tabla lleva JJ, JG, JE, JP, GF, GC, DIF, PGP y PUNTOS. JJ y DIF se
+                calculan solos. Puedes llenarla a mano o desde los partidos ya finalizados.
+              </p>
+              <StandingsTable
+                sport={league.sport}
+                teams={teams}
+                rows={standingsDraft}
+                accent={league.accent_color}
+                editable
+                onChange={(teamId, key, value) =>
+                  setStandingsDraft((rows) =>
+                    rows.map((row) =>
+                      row.team_id === teamId ? applyStandingValue(row, key, value) : row,
+                    ),
+                  )
+                }
+              />
+              <div className="ops-inline">
+                <button
+                  type="button"
+                  className="btn btn-outline"
+                  disabled={busy}
+                  onClick={() =>
+                    setStandingsDraft(
+                      sortStandings(
+                        computeStandingsFromMatches(teams, matches).map((row) => {
+                          const current = standingsDraft.find((r) => r.team_id === row.team_id);
+                          return current ? { ...row, penalty_wins: current.penalty_wins } : row;
+                        }),
+                      ),
+                    )
+                  }
+                >
+                  Calcular desde partidos
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-outline"
+                  disabled={busy}
+                  onClick={() =>
+                    setStandingsDraft((rows) =>
+                      rows.map((row) => ({ ...row, points: suggestPoints(row) })),
+                    )
+                  }
+                >
+                  Armar puntos (3 x JG + JE)
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  disabled={busy}
+                  onClick={() => void onSaveStandings()}
+                >
+                  Publicar tabla
+                </button>
+              </div>
+            </>
+          )}
         </div>
       )}
 

@@ -4,23 +4,26 @@ import { LeagueSeasonBoard } from "@/components/leagues/LeagueSeasonBoard";
 import {
   fetchLeaguesBySport,
   fetchLiveMatches,
+  fetchLeagueStandings,
   fetchMatchdays,
   fetchPlayersByLeague,
   fetchTeamOfWeek,
   fetchTeamsByLeague,
 } from "@/lib/services/leagues";
 import type { League, Matchday, Player, SportsMatch, Team, TeamOfWeek } from "@/lib/types";
+import type { StandingRow } from "@/lib/standings";
 import { SPORT_LABELS } from "@/lib/types";
 
 async function loadLeaguePack(leagueId: string) {
-  const [t, p, m, w, games] = await Promise.all([
+  const [t, p, m, w, games, table] = await Promise.all([
     fetchTeamsByLeague(leagueId),
     fetchPlayersByLeague(leagueId),
     fetchMatchdays(leagueId),
     fetchTeamOfWeek(leagueId),
     fetchLiveMatches(leagueId),
+    fetchLeagueStandings(leagueId),
   ]);
-  return { teams: t, players: p, matchdays: m, totw: w, matches: games };
+  return { teams: t, players: p, matchdays: m, totw: w, matches: games, standings: table as StandingRow[] };
 }
 
 export function SportHub({ sport }: { sport: string }) {
@@ -31,6 +34,7 @@ export function SportHub({ sport }: { sport: string }) {
   const [matchdays, setMatchdays] = useState<Matchday[]>([]);
   const [totw, setTotw] = useState<TeamOfWeek | null>(null);
   const [matches, setMatches] = useState<SportsMatch[]>([]);
+  const [standings, setStandings] = useState<StandingRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -53,12 +57,14 @@ export function SportHub({ sport }: { sport: string }) {
           setMatchdays(pack.matchdays);
           setTotw(pack.totw);
           setMatches(pack.matches);
+          setStandings(pack.standings);
         } else {
           setTeams([]);
           setPlayers([]);
           setMatchdays([]);
           setTotw(null);
           setMatches([]);
+          setStandings([]);
         }
       } catch (e) {
         if (alive) setError(e instanceof Error ? e.message : "Error al cargar");
@@ -152,6 +158,7 @@ export function SportHub({ sport }: { sport: string }) {
                 setMatchdays(pack.matchdays);
                 setTotw(pack.totw);
                 setMatches(pack.matches);
+                setStandings(pack.standings);
               }}
             >
               {l.name}
@@ -167,6 +174,7 @@ export function SportHub({ sport }: { sport: string }) {
         matches={matches}
         matchdays={matchdays}
         totw={totw}
+        standings={standings}
       />
 
       <section className="dash-panel" style={{ marginTop: 18 }}>

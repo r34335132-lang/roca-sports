@@ -204,6 +204,22 @@ export type SportsMatch = {
   away_team?: Pick<Team, "id" | "name" | "logo_url"> | null;
 };
 
+export type TeamStanding = {
+  id: string;
+  league_id: string;
+  team_id: string;
+  played: number;
+  won: number;
+  drawn: number;
+  lost: number;
+  goals_for: number;
+  goals_against: number;
+  goal_diff: number;
+  penalty_wins: number;
+  points: number;
+  updated_at: string;
+};
+
 export type SportsMatchInput = {
   league_id: string;
   home_team_id: string;

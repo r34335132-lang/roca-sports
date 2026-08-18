@@ -5,12 +5,14 @@ import { SiteFooter, SiteHeader } from "@/components/layout/SiteHeader";
 import {
   fetchLeague,
   fetchLiveMatches,
+  fetchLeagueStandings,
   fetchMatchdays,
   fetchPlayersByLeague,
   fetchTeamOfWeek,
   fetchTeamsByLeague,
 } from "@/lib/services/leagues";
 import type { League, Matchday, Player, SportsMatch, Team, TeamOfWeek } from "@/lib/types";
+import type { StandingRow } from "@/lib/standings";
 import { SPORT_IMAGES, SPORT_LABELS } from "@/lib/types";
 
 export function LigaDetailPage() {
@@ -21,6 +23,7 @@ export function LigaDetailPage() {
   const [matches, setMatches] = useState<SportsMatch[]>([]);
   const [matchdays, setMatchdays] = useState<Matchday[]>([]);
   const [totw, setTotw] = useState<TeamOfWeek | null>(null);
+  const [standings, setStandings] = useState<StandingRow[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -29,18 +32,20 @@ export function LigaDetailPage() {
         const l = await fetchLeague(idOrSlug);
         setLeague(l);
         if (l) {
-          const [t, p, games, days, week] = await Promise.all([
+          const [t, p, games, days, week, table] = await Promise.all([
             fetchTeamsByLeague(l.id),
             fetchPlayersByLeague(l.id),
             fetchLiveMatches(l.id),
             fetchMatchdays(l.id),
             fetchTeamOfWeek(l.id),
+            fetchLeagueStandings(l.id),
           ]);
           setTeams(t);
           setPlayers(p);
           setMatches(games);
           setMatchdays(days);
           setTotw(week);
+          setStandings(table);
         }
       } catch (e) {
         setError(e instanceof Error ? e.message : "Error");
@@ -132,6 +137,7 @@ export function LigaDetailPage() {
             matches={matches}
             matchdays={matchdays}
             totw={totw}
+            standings={standings}
           />
         </section>
       </main>

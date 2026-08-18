@@ -1,3 +1,4 @@
+import { StandingsTable } from "@/components/leagues/StandingsTable";
 import {
   getStatFields,
   leaderStatKey,
@@ -6,6 +7,7 @@ import {
   rankPlayers,
   totwWeekLabel,
 } from "@/lib/leagueOps";
+import { buildStandingsTable, type StandingRow } from "@/lib/standings";
 import { SPORT_ATHLETES } from "@/lib/types";
 import type { League, Matchday, Player, SportsMatch, Team, TeamOfWeek } from "@/lib/types";
 
@@ -20,6 +22,7 @@ export function LeagueSeasonBoard({
   matches,
   matchdays,
   totw,
+  standings = [],
 }: {
   league: League;
   teams: Team[];
@@ -27,14 +30,30 @@ export function LeagueSeasonBoard({
   matches: SportsMatch[];
   matchdays: Matchday[];
   totw: TeamOfWeek | null;
+  standings?: StandingRow[];
 }) {
   const fields = getStatFields(league.sport);
   const leaderKey = leaderStatKey(league.sport);
   const leaders = rankPlayers(players, leaderKey, 8);
   const leaderLabel = fields.find((f) => f.key === leaderKey)?.label ?? "Líderes";
+  const table = buildStandingsTable(teams, standings, matches);
 
   return (
     <div className="season-board">
+      <section className="dash-panel standings-panel">
+        <h3>Tabla de posiciones</h3>
+        {teams.length === 0 ? (
+          <p className="muted">Todavía no hay equipos en esta liga.</p>
+        ) : (
+          <StandingsTable
+            sport={league.sport}
+            teams={teams}
+            rows={table}
+            accent={league.accent_color}
+          />
+        )}
+      </section>
+
       <section className="dash-panel">
         <h3>Rol de juegos</h3>
         {matches.length === 0 ? (

@@ -1,4 +1,5 @@
 import { getDefaultCommissionPct, supabase } from "@/lib/supabase";
+import type { StandingRow } from "@/lib/standings";
 import type {
   CardTemplate,
   League,
@@ -16,6 +17,7 @@ import type {
   Team,
   TeamInput,
   TeamOfWeek,
+  TeamStanding,
 } from "@/lib/types";
 
 export async function getCurrentUserId() {
@@ -535,6 +537,40 @@ export async function countAllTeams() {
   if (error) return 0;
   return count ?? 0;
 }
+
+export async function fetchLeagueStandings(leagueId: string) {
+  const { data, error } = await supabase
+    .from("league_standings")
+    .select("*")
+    .eq("league_id", leagueId);
+  if (error) return [] as TeamStanding[];
+  return (data ?? []) as TeamStanding[];
+}
+
+export async function saveLeagueStandings(leagueId: string, rows: StandingRow[]) {
+  const payload = rows.map((row) => ({
+    league_id: leagueId,
+    team_id: row.team_id,
+    played: row.played,
+    won: row.won,
+    drawn: row.drawn,
+    lost: row.lost,
+    goals_for: row.goals_for,
+    goals_against: row.goals_against,
+    goal_diff: row.goal_diff,
+    penalty_wins: row.penalty_wins,
+    points: row.points,
+    updated_at: new Date().toISOString(),
+  }));
+  const { data, error } = await supabase
+    .from("league_standings")
+    .upsert(payload, { onConflict: "league_id,team_id" })
+    .select("*");
+  if (error) throw error;
+  return (data ?? []) as TeamStanding[];
+}
+
+import type { StandingRow } from "@/lib/standings";
 
 export async function uploadLeagueAsset(file: File, folder: string) {
   const ext = file.name.split(".").pop() || "jpg";
