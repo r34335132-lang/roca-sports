@@ -200,6 +200,21 @@ export type SportsMatch = {
   home_score: number;
   away_score: number;
   created_by: string | null;
+  home_team?: Pick<Team, "id" | "name" | "logo_url"> | null;
+  away_team?: Pick<Team, "id" | "name" | "logo_url"> | null;
+};
+
+export type SportsMatchInput = {
+  league_id: string;
+  home_team_id: string;
+  away_team_id: string;
+  sport: string;
+  title?: string | null;
+  venue?: string | null;
+  status?: SportsMatch["status"];
+  starts_at?: string | null;
+  home_score?: number;
+  away_score?: number;
 };
 
 export type LeagueInput = {

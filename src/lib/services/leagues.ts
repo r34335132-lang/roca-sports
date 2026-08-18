@@ -12,6 +12,7 @@ import type {
   PlayerProfile,
   PlayerStats,
   SportsMatch,
+  SportsMatchInput,
   Team,
   TeamInput,
   TeamOfWeek,
@@ -426,6 +427,97 @@ export async function fetchLiveMatches(leagueId?: string) {
   const { data, error } = await query;
   if (error) return [] as SportsMatch[];
   return (data ?? []) as SportsMatch[];
+}
+
+export async function createSportsMatch(input: SportsMatchInput) {
+  const created_by = await getCurrentUserId();
+  const { data, error } = await supabase
+    .from("sports_matches")
+    .insert({
+      ...input,
+      status: input.status ?? "scheduled",
+      home_score: input.home_score ?? 0,
+      away_score: input.away_score ?? 0,
+      created_by,
+    })
+    .select("*")
+    .single();
+  if (error) throw error;
+  return data as SportsMatch;
+}
+
+export async function updateSportsMatch(
+  id: string,
+  input: Partial<Pick<SportsMatch, "status" | "home_score" | "away_score" | "venue" | "starts_at" | "title">>,
+) {
+  const { data, error } = await supabase
+    .from("sports_matches")
+    .update(input)
+    .eq("id", id)
+    .select("*")
+    .single();
+  if (error) throw error;
+  return data as SportsMatch;
+}
+
+export async function updateMatchday(
+  id: string,
+  input: Partial<Pick<Matchday, "status" | "title" | "starts_at">>,
+) {
+  const { data, error } = await supabase
+    .from("matchdays")
+    .update(input)
+    .eq("id", id)
+    .select("*")
+    .single();
+  if (error) throw error;
+  return data as Matchday;
+}
+
+export async function upsertPlayerStats(input: {
+  player_id: string;
+  league_id: string;
+  season: string;
+  patch: Partial<PlayerStats>;
+}) {
+  const { data: existing, error: readError } = await supabase
+    .from("player_stats")
+    .select("id")
+    .eq("player_id", input.player_id)
+    .eq("league_id", input.league_id)
+    .maybeSingle();
+  if (readError) throw readError;
+
+  const payload = {
+    games: 0,
+    points: 0,
+    touchdowns: 0,
+    goals: 0,
+    assists: 0,
+    tackles: 0,
+    interceptions: 0,
+    mvp_count: 0,
+    ...input.patch,
+    player_id: input.player_id,
+    league_id: input.league_id,
+    season: input.season,
+    updated_at: new Date().toISOString(),
+  };
+
+  if (existing?.id) {
+    const { data, error } = await supabase
+      .from("player_stats")
+      .update(payload)
+      .eq("id", existing.id)
+      .select("*")
+      .single();
+    if (error) throw error;
+    return data as PlayerStats;
+  }
+
+  const { data, error } = await supabase.from("player_stats").insert(payload).select("*").single();
+  if (error) throw error;
+  return data as PlayerStats;
 }
 
 export async function countAllPlayers() {

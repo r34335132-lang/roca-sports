@@ -1,20 +1,18 @@
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { LeagueBrandEditor } from "@/components/leagues/LeagueBrandEditor";
+import { LeagueOpsDesk } from "@/components/leagues/LeagueOpsDesk";
 import { PlayerStudio } from "@/components/players/PlayerStudio";
 import { calcBudget, clampPct, money, sumPayments } from "@/lib/finance";
 import {
-  createMatchday,
-  fetchMatchdays,
   fetchPaymentsByLeague,
   fetchPlayersByLeague,
   fetchLeaguePricing,
   fetchTeamsByLeague,
   markPaymentPaid,
   upsertLeaguePricing,
-  upsertTeamOfWeek,
 } from "@/lib/services/leagues";
-import type { League, Matchday, Player, PlayerPayment, Team } from "@/lib/types";
+import type { League, Player, PlayerPayment, Team } from "@/lib/types";
 
 export function LeagueWorkspace({
   league,
@@ -26,26 +24,21 @@ export function LeagueWorkspace({
   const [teams, setTeams] = useState<Team[]>([]);
   const [players, setPlayers] = useState<Player[]>([]);
   const [payments, setPayments] = useState<PlayerPayment[]>([]);
-  const [matchdays, setMatchdays] = useState<Matchday[]>([]);
   const [fee, setFee] = useState(80);
   const [commission, setCommission] = useState(50);
   const [msg, setMsg] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [matchdayForm, setMatchdayForm] = useState({ number: 1, title: "Jornada 1" });
-  const [totwIds, setTotwIds] = useState<string[]>([]);
 
   const load = async (id: string) => {
-    const [t, p, pay, m, pricing] = await Promise.all([
+    const [t, p, pay, pricing] = await Promise.all([
       fetchTeamsByLeague(id),
       fetchPlayersByLeague(id),
       fetchPaymentsByLeague(id),
-      fetchMatchdays(id),
       fetchLeaguePricing(id),
     ]);
     setTeams(t);
     setPlayers(p);
     setPayments(pay);
-    setMatchdays(m);
     if (pricing) {
       setFee(Number(pricing.fee_per_player));
       setCommission(Number(pricing.platform_commission_pct));
@@ -55,7 +48,6 @@ export function LeagueWorkspace({
   useEffect(() => {
     setMsg(null);
     setError(null);
-    setTotwIds([]);
     void load(league.id).catch((e) => setError(String(e.message ?? e)));
   }, [league.id]);
 
@@ -177,88 +169,16 @@ export function LeagueWorkspace({
 
       <PlayerStudio leagues={[league]} defaultLeagueId={league.id} />
 
-      <div className="dash-split">
-        <section className="dash-panel">
-          <h3>Jornadas</h3>
-          <form
-            className="inline-form"
-            onSubmit={async (e: FormEvent) => {
-              e.preventDefault();
-              await createMatchday({
-                league_id: league.id,
-                number: matchdayForm.number,
-                title: matchdayForm.title,
-              });
-              await load(league.id);
-              setMsg("Jornada publicada");
-            }}
-          >
-            <input
-              type="number"
-              value={matchdayForm.number}
-              onChange={(e) =>
-                setMatchdayForm({ ...matchdayForm, number: Number(e.target.value) })
-              }
-            />
-            <input
-              value={matchdayForm.title}
-              onChange={(e) =>
-                setMatchdayForm({ ...matchdayForm, title: e.target.value })
-              }
-            />
-            <button className="btn btn-outline" type="submit">
-              Agregar
-            </button>
-          </form>
-          <ul className="simple-list">
-            {matchdays.map((m) => (
-              <li key={m.id}>
-                <strong>
-                  J{m.number} · {m.title}
-                </strong>
-                <span>{m.status}</span>
-              </li>
-            ))}
-          </ul>
+      <LeagueOpsDesk
+        league={league}
+        players={players}
+        teams={teams}
+        onRefresh={async () => {
+          await load(league.id);
+        }}
+      />
 
-          <h4>Equipo de la semana</h4>
-          <div className="chip-row wrap">
-            {players.map((p) => {
-              const on = totwIds.includes(p.id);
-              return (
-                <button
-                  key={p.id}
-                  type="button"
-                  className={`chip ${on ? "active" : ""}`}
-                  onClick={() =>
-                    setTotwIds((ids) =>
-                      on ? ids.filter((x) => x !== p.id) : [...ids, p.id].slice(0, 11),
-                    )
-                  }
-                >
-                  {p.full_name}
-                </button>
-              );
-            })}
-          </div>
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={async () => {
-              await upsertTeamOfWeek({
-                league_id: league.id,
-                title: "Equipo de la semana",
-                week_label: `Jornada ${matchdays.at(-1)?.number ?? 1}`,
-                player_ids: totwIds,
-              });
-              setMsg("Equipo de la semana publicado");
-            }}
-          >
-            Publicar equipo de la semana
-          </button>
-        </section>
-
-        <section className="dash-panel">
+      <section className="dash-panel">
           <h3>Pagos de jugadores</h3>
           <ul className="simple-list">
             {payments.map((p) => (
@@ -288,8 +208,7 @@ export function LeagueWorkspace({
           <Link className="text-link" to={`/liga/${league.slug || league.id}`}>
             Ver página pública de la liga →
           </Link>
-        </section>
-      </div>
+      </section>
     </div>
   );
 }

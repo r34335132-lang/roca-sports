@@ -2518,3 +2518,192 @@ button.league-card {
     grid-template-columns: 1fr;
   }
 }
+
+.ops-desk {
+  margin: 28px 0;
+}
+
+.ops-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.ops-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ops-tabs button {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--white);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ops-tabs button.active {
+  border-color: var(--lime);
+  background: var(--lime);
+  color: #050708;
+}
+
+.ops-grid {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 18px;
+}
+
+.ops-form {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.match-board {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.match-ticket {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background:
+    linear-gradient(160deg, rgba(185, 255, 0, 0.08), rgba(8, 10, 12, 0.92));
+}
+
+.match-ticket.status-live {
+  border-color: var(--lime);
+  box-shadow: 0 0 0 1px rgba(185, 255, 0, 0.3);
+}
+
+.match-ticket.status-final {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.match-ticket h4 {
+  margin: 10px 0 12px;
+  font-size: 18px;
+  text-transform: uppercase;
+}
+
+.match-score,
+.match-score-read {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0 0 10px;
+}
+
+.match-score input,
+.stats-table input {
+  min-height: 40px;
+  text-align: center;
+}
+
+.match-score em,
+.match-score-read em {
+  color: var(--lime);
+  font-family: Impact, "Arial Black", sans-serif;
+  font-style: italic;
+}
+
+.match-score-read b {
+  font-family: Impact, "Arial Black", sans-serif;
+  font-size: 32px;
+  font-style: italic;
+}
+
+.ops-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.stats-table-wrap {
+  margin-bottom: 16px;
+}
+
+.stats-table th,
+.stats-table td {
+  white-space: nowrap;
+}
+
+.stats-table td strong,
+.totw-pick strong,
+.totw-slot strong {
+  display: block;
+}
+
+.stats-table small {
+  color: var(--muted);
+}
+
+.totw-picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.totw-pick {
+  display: grid;
+  gap: 6px;
+  padding: 0 0 10px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #0a0d0f;
+  color: inherit;
+  text-align: left;
+}
+
+.totw-pick img,
+.totw-slot img {
+  width: 100%;
+  height: 88px;
+  object-fit: cover;
+}
+
+.totw-pick strong,
+.totw-pick span {
+  padding: 0 10px;
+}
+
+.totw-pick.is-on {
+  border-color: var(--lime);
+  box-shadow: 0 0 0 1px var(--lime);
+}
+
+.totw-preview {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.season-board {
+  display: grid;
+  grid-template-columns: 1.2fr 0.9fr 0.9fr;
+  gap: 18px;
+}
+
+@media (max-width: 980px) {
+  .ops-grid,
+  .season-board {
+    grid-template-columns: 1fr;
+  }
+}

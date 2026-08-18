@@ -1,17 +1,26 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { LeagueSeasonBoard } from "@/components/leagues/LeagueSeasonBoard";
 import {
   fetchLeaguesBySport,
+  fetchLiveMatches,
   fetchMatchdays,
   fetchPlayersByLeague,
   fetchTeamOfWeek,
   fetchTeamsByLeague,
 } from "@/lib/services/leagues";
-import type { League, Matchday, Player, PlayerStats, Team, TeamOfWeek } from "@/lib/types";
+import type { League, Matchday, Player, SportsMatch, Team, TeamOfWeek } from "@/lib/types";
 import { SPORT_LABELS } from "@/lib/types";
 
-function statsFor(player: Player) {
-  return player.player_stats?.[0] as PlayerStats | undefined;
+async function loadLeaguePack(leagueId: string) {
+  const [t, p, m, w, games] = await Promise.all([
+    fetchTeamsByLeague(leagueId),
+    fetchPlayersByLeague(leagueId),
+    fetchMatchdays(leagueId),
+    fetchTeamOfWeek(leagueId),
+    fetchLiveMatches(leagueId),
+  ]);
+  return { teams: t, players: p, matchdays: m, totw: w, matches: games };
 }
 
 export function SportHub({ sport }: { sport: string }) {
@@ -21,6 +30,7 @@ export function SportHub({ sport }: { sport: string }) {
   const [players, setPlayers] = useState<Player[]>([]);
   const [matchdays, setMatchdays] = useState<Matchday[]>([]);
   const [totw, setTotw] = useState<TeamOfWeek | null>(null);
+  const [matches, setMatches] = useState<SportsMatch[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -36,22 +46,19 @@ export function SportHub({ sport }: { sport: string }) {
         const current = list[0] ?? null;
         setLeague(current);
         if (current) {
-          const [t, p, m, w] = await Promise.all([
-            fetchTeamsByLeague(current.id),
-            fetchPlayersByLeague(current.id),
-            fetchMatchdays(current.id),
-            fetchTeamOfWeek(current.id),
-          ]);
+          const pack = await loadLeaguePack(current.id);
           if (!alive) return;
-          setTeams(t);
-          setPlayers(p);
-          setMatchdays(m);
-          setTotw(w);
+          setTeams(pack.teams);
+          setPlayers(pack.players);
+          setMatchdays(pack.matchdays);
+          setTotw(pack.totw);
+          setMatches(pack.matches);
         } else {
           setTeams([]);
           setPlayers([]);
           setMatchdays([]);
           setTotw(null);
+          setMatches([]);
         }
       } catch (e) {
         if (alive) setError(e instanceof Error ? e.message : "Error al cargar");
@@ -63,22 +70,6 @@ export function SportHub({ sport }: { sport: string }) {
       alive = false;
     };
   }, [sport]);
-
-  const scorers = useMemo(() => {
-    const key =
-      sport === "soccer"
-        ? "goals"
-        : sport === "basketball"
-          ? "points"
-          : sport === "flag"
-            ? "touchdowns"
-            : sport === "boxing"
-              ? "mvp_count"
-              : "points";
-    return [...players]
-      .sort((a, b) => Number(statsFor(b)?.[key as keyof PlayerStats] ?? 0) - Number(statsFor(a)?.[key as keyof PlayerStats] ?? 0))
-      .slice(0, 8);
-  }, [players, sport]);
 
   const accent = league?.accent_color ?? "#b9ff00";
   const label = SPORT_LABELS[sport] ?? sport;
@@ -108,11 +99,6 @@ export function SportHub({ sport }: { sport: string }) {
       </div>
     );
   }
-
-  const scorerKey =
-    sport === "soccer" ? "goals" : sport === "flag" ? "touchdowns" : "points";
-  const scorerLabel =
-    sport === "soccer" ? "Goleadores" : sport === "flag" ? "TD leaders" : "Líderes";
 
   return (
     <div className="sport-hub">
@@ -145,8 +131,8 @@ export function SportHub({ sport }: { sport: string }) {
             <span>Jugadores</span>
           </div>
           <div>
-            <strong>{matchdays.length}</strong>
-            <span>Jornadas</span>
+            <strong>{matches.length}</strong>
+            <span>Juegos</span>
           </div>
         </div>
       </div>
@@ -160,16 +146,12 @@ export function SportHub({ sport }: { sport: string }) {
               className={`chip ${l.id === league.id ? "active" : ""}`}
               onClick={async () => {
                 setLeague(l);
-                const [t, p, m, w] = await Promise.all([
-                  fetchTeamsByLeague(l.id),
-                  fetchPlayersByLeague(l.id),
-                  fetchMatchdays(l.id),
-                  fetchTeamOfWeek(l.id),
-                ]);
-                setTeams(t);
-                setPlayers(p);
-                setMatchdays(m);
-                setTotw(w);
+                const pack = await loadLeaguePack(l.id);
+                setTeams(pack.teams);
+                setPlayers(pack.players);
+                setMatchdays(pack.matchdays);
+                setTotw(pack.totw);
+                setMatches(pack.matches);
               }}
             >
               {l.name}
@@ -178,85 +160,29 @@ export function SportHub({ sport }: { sport: string }) {
         </div>
       )}
 
-      <div className="sport-grid">
-        <section className="dash-panel">
-          <h3>Jornadas</h3>
-          {matchdays.length === 0 ? (
-            <p className="muted">Aún no hay jornadas publicadas.</p>
-          ) : (
-            <ul className="simple-list">
-              {matchdays.map((m) => (
-                <li key={m.id}>
-                  <strong>
-                    J{m.number} · {m.title}
-                  </strong>
-                  <span>{m.status}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
+      <LeagueSeasonBoard
+        league={league}
+        teams={teams}
+        players={players}
+        matches={matches}
+        matchdays={matchdays}
+        totw={totw}
+      />
 
-        <section className="dash-panel">
-          <h3>{scorerLabel}</h3>
-          {scorers.length === 0 ? (
-            <p className="muted">Sin estadísticas todavía.</p>
-          ) : (
-            <ol className="scorer-list">
-              {scorers.map((p, i) => (
-                <li key={p.id}>
-                  <span className="rank">{i + 1}</span>
-                  <div>
-                    <strong>{p.full_name}</strong>
-                    <small>{p.teams?.name ?? "Sin equipo"}</small>
-                  </div>
-                  <em style={{ color: accent }}>
-                    {Number(statsFor(p)?.[scorerKey as keyof PlayerStats] ?? 0)}
-                  </em>
-                </li>
-              ))}
-            </ol>
-          )}
-        </section>
-
-        <section className="dash-panel">
-          <h3>Equipo de la semana</h3>
-          {!totw ? (
-            <p className="muted">El dueño de la liga publicará el XI / lineup semanal.</p>
-          ) : (
-            <div>
-              <p className="eyebrow">{totw.week_label}</p>
-              <h4>{totw.title}</h4>
-              <div className="totw-grid">
-                {totw.player_ids.map((id) => {
-                  const p = players.find((x) => x.id === id);
-                  return (
-                    <div key={id} className="totw-slot">
-                      <strong>{p?.full_name ?? "Jugador"}</strong>
-                      <span>#{p?.number ?? "—"}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-        </section>
-
-        <section className="dash-panel">
-          <h3>Equipos</h3>
-          <ul className="simple-list">
-            {teams.map((t) => (
-              <li key={t.id}>
-                <strong>{t.name}</strong>
-                <span>{t.coach_name ?? "Sin coach"}</span>
-              </li>
-            ))}
-          </ul>
-          <Link className="text-link" to={`/liga/${league.slug || league.id}`}>
-            Ver liga completa →
-          </Link>
-        </section>
-      </div>
+      <section className="dash-panel" style={{ marginTop: 18 }}>
+        <h3>Equipos</h3>
+        <ul className="simple-list">
+          {teams.map((t) => (
+            <li key={t.id}>
+              <strong>{t.name}</strong>
+              <span>{t.coach_name ?? "Sin coach"}</span>
+            </li>
+          ))}
+        </ul>
+        <Link className="text-link" to={`/liga/${league.slug || league.id}`}>
+          Ver liga completa →
+        </Link>
+      </section>
     </div>
   );
 }

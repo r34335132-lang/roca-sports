@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { LeagueSeasonBoard } from "@/components/leagues/LeagueSeasonBoard";
 import { SiteFooter, SiteHeader } from "@/components/layout/SiteHeader";
 import {
   fetchLeague,
+  fetchLiveMatches,
+  fetchMatchdays,
   fetchPlayersByLeague,
+  fetchTeamOfWeek,
   fetchTeamsByLeague,
 } from "@/lib/services/leagues";
-import type { League, Player, Team } from "@/lib/types";
+import type { League, Matchday, Player, SportsMatch, Team, TeamOfWeek } from "@/lib/types";
 import { SPORT_IMAGES, SPORT_LABELS } from "@/lib/types";
 
 export function LigaDetailPage() {
@@ -14,6 +18,9 @@ export function LigaDetailPage() {
   const [league, setLeague] = useState<League | null>(null);
   const [teams, setTeams] = useState<Team[]>([]);
   const [players, setPlayers] = useState<Player[]>([]);
+  const [matches, setMatches] = useState<SportsMatch[]>([]);
+  const [matchdays, setMatchdays] = useState<Matchday[]>([]);
+  const [totw, setTotw] = useState<TeamOfWeek | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -22,12 +29,18 @@ export function LigaDetailPage() {
         const l = await fetchLeague(idOrSlug);
         setLeague(l);
         if (l) {
-          const [t, p] = await Promise.all([
+          const [t, p, games, days, week] = await Promise.all([
             fetchTeamsByLeague(l.id),
             fetchPlayersByLeague(l.id),
+            fetchLiveMatches(l.id),
+            fetchMatchdays(l.id),
+            fetchTeamOfWeek(l.id),
           ]);
           setTeams(t);
           setPlayers(p);
+          setMatches(games);
+          setMatchdays(days);
+          setTotw(week);
         }
       } catch (e) {
         setError(e instanceof Error ? e.message : "Error");
@@ -109,6 +122,17 @@ export function LigaDetailPage() {
               ))}
             </ul>
           </div>
+        </section>
+
+        <section className="section-pad">
+          <LeagueSeasonBoard
+            league={league}
+            teams={teams}
+            players={players}
+            matches={matches}
+            matchdays={matchdays}
+            totw={totw}
+          />
         </section>
       </main>
       <SiteFooter />

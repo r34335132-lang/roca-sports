@@ -15,7 +15,8 @@
     "strict": true,
     "noFallthroughCasesInSwitch": true,
     "types": [
-      "node"
+      "node",
+      "vitest/config"
     ]
   },
   "include": [
