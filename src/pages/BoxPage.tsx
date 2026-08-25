@@ -1,12 +1,12 @@
 import { SiteFooter, SiteHeader } from "@/components/layout/SiteHeader";
-import { BoxRecHub } from "@/components/box/BoxRecHub";
+import { BoxingHub } from "@/components/box/BoxingHub";
 
 export function BoxPage() {
   return (
     <>
       <SiteHeader />
-      <main className="boxrec-page">
-        <BoxRecHub />
+      <main className="boxing-page">
+        <BoxingHub />
       </main>
       <SiteFooter />
     </>
