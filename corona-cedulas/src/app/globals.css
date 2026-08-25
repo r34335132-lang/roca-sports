@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+:root {
+  --corona-navy: #0b1c2e;
+  --corona-green: #1a6b3a;
+  --corona-lime: #c8ff00;
+  --corona-gold: #f2b705;
+  --corona-paper: #f2f1ee;
+  --corona-label: #7a7a7a;
+  --roca-lime: #c8ff00;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: #070b10;
+  color: #f5f5f5;
+}
+
+body {
+  font-family: var(--font-montserrat), Arial, Helvetica, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+@media print {
+  body * {
+    visibility: hidden !important;
+  }
+
+  #cedula-print-root,
+  #cedula-print-root * {
+    visibility: visible !important;
+  }
+
+  #cedula-print-root {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+    box-shadow: none !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}
