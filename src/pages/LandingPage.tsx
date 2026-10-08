@@ -1,157 +1,179 @@
 import { Link } from "react-router-dom";
 import { RocaLogo } from "@/components/brand/RocaLogo";
 import { SiteFooter, SiteHeader } from "@/components/layout/SiteHeader";
-import { UpperDeckBox } from "@/components/box/UpperDeckBox";
+import { BOXING_GYMS, BOXING_SCHEDULE, DURANGO_CHAMPIONS } from "@/lib/boxingData";
 
 const DISCIPLINES = [
+  {
+    key: "flag",
+    label: "Flag",
+    tag: "Toque",
+    href: "/deportes/flag",
+    img: "https://images.unsplash.com/photo-1566577739112-5180d4bf9390?auto=format&fit=crop&w=900&q=78",
+  },
   {
     key: "soccer",
     label: "Fútbol",
     tag: "Liga estrella",
+    href: "/deportes/soccer",
     img: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=1300&q=80",
+  },
+  {
+    key: "baseball",
+    label: "Béisbol",
+    tag: "Diamante",
+    href: "/deportes/baseball",
+    img: "https://images.unsplash.com/photo-1529768167801-9173d94c2a42?auto=format&fit=crop&w=900&q=78",
+  },
+  {
+    key: "cycling",
+    label: "Ciclismo",
+    tag: "Ruta y montaña",
+    href: "/deportes/cycling",
+    img: "https://images.unsplash.com/photo-1541625602330-2277a4c46182?auto=format&fit=crop&w=900&q=78",
   },
   {
     key: "basketball",
     label: "Básquetbol",
     tag: "Cancha",
+    href: "/deportes/basketball",
     img: "https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=900&q=78",
+  },
+  {
+    key: "volleyball",
+    label: "Voleibol",
+    tag: "Red",
+    href: "/deportes/volleyball",
+    img: "https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?auto=format&fit=crop&w=900&q=78",
   },
   {
     key: "boxing",
     label: "Box",
     tag: "Fight night",
-    img: "https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?auto=format&fit=crop&w=1200&q=80",
+    href: "/box",
+    img: "https://images.unsplash.com/photo-1495555687398-3f50d6e79e1e?auto=format&fit=crop&w=1400&q=80",
+  },
+];
+
+const STEPS = [
+  {
+    title: "Elige tu deporte",
+    copy: "Encuentra la liga de fútbol, básquet, box, flag, béisbol, voleibol o ciclismo que va contigo.",
   },
   {
-    key: "flag",
-    label: "Flag",
-    tag: "Toque",
-    img: "https://images.unsplash.com/photo-1560272564-c83b66b1ad12?auto=format&fit=crop&w=900&q=78",
+    title: "Inscríbete con tu equipo",
+    copy: "Regístrate en minutos, súmate a tu equipo y sigue cada jornada desde tu celular.",
+  },
+  {
+    title: "Recibe tu credencial",
+    copy: "Tu Upper Deck digital con QR, foto y estadísticas que suben con cada partido.",
   },
 ];
 
 const NEWS = [
   {
     tag: "Boxeo",
-    title: "El ring llega a ROCA: box con credencial Upper Deck",
-    copy: "La disciplina de box entra al scoreboard con fotos de pelea, rareza Knockout y stats de KO.",
-    img: "https://images.unsplash.com/photo-1517438476312-10d79c077509?auto=format&fit=crop&w=1200&q=80",
-    href: "/deportes/boxing",
-  },
-  {
-    tag: "Credenciales",
-    title: "Las cartas son el gancho: foil, rareza y QR",
-    copy: "Cada jugador abre su Upper Deck con el look de su deporte. El box de fight night las revela al choque.",
-    img: "https://images.unsplash.com/photo-1461896833974-ffe9f0cb4a1e?auto=format&fit=crop&w=1200&q=80",
+    title: `${BOXING_GYMS.length} gimnasios de box en un solo directorio`,
+    copy: "Durango capital y municipios: entrenadores, direcciones y teléfonos para que encuentres dónde entrenar.",
+    img: "https://images.unsplash.com/photo-1509563268479-0f004cf3f58b?auto=format&fit=crop&w=1200&q=80",
     href: "/box",
   },
   {
-    tag: "Ligas",
-    title: "Finanzas claras: cuánto entra, cuánto sale",
-    copy: "Dueños y colaboradores ven comisión, caja y su corte al instante cuando mueven el porcentaje.",
-    img: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=900&q=70",
-    href: "/dashboard/admin",
+    tag: "Credenciales",
+    title: "Tu credencial Upper Deck: foil, rareza y QR",
+    copy: "Cada jugador lleva una carta con el look de su deporte y sus estadísticas de la temporada.",
+    img: "https://images.unsplash.com/photo-1461896833974-ffe9f0cb4a1e?auto=format&fit=crop&w=1200&q=80",
+    href: "/deportes",
+  },
+  {
+    tag: "Deportes",
+    title: "Siete deportes, una sola comunidad",
+    copy: "Ciclismo y voleibol se suman a fútbol, básquet, box, flag y béisbol en ROCA.",
+    img: "https://images.unsplash.com/photo-1541625602330-2277a4c46182?auto=format&fit=crop&w=900&q=70",
+    href: "/deportes",
   },
 ];
+
+const NEXT_BOUT = BOXING_SCHEDULE[0];
 
 export function LandingPage() {
   return (
     <>
       <SiteHeader />
-      <main>
-        <section className="hero" aria-labelledby="hero-title">
-          <div className="hero-photo" aria-hidden="true">
-            <img
-              src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=2200&q=82"
-              alt=""
-            />
-          </div>
-          <div className="hero-inner">
-            <div className="hero-copy">
-              <div className="hero-logo">
-                <RocaLogo className="hero-logo-img" />
-              </div>
-              <h1 id="hero-title">
-                Más que ligas,
-                <br />
-                creamos <em>comunidad.</em>
-              </h1>
-              <p>
-                Ligas por deporte, credenciales Upper Deck y dashboards para admin,
-                dueños y jugadores — conectado a la misma base de datos.
-              </p>
-              <div className="hero-actions">
-                <Link className="btn btn-primary" to="/deportes">
-                  <span>Ver deportes</span>
-                </Link>
-                <Link className="btn btn-outline" to="/crear-liga">
-                  <span>Crear liga</span>
-                </Link>
-              </div>
-            </div>
-
-            <div className="hero-panel" aria-label="Vistas destacadas">
-              {DISCIPLINES.slice(0, 3).map((d, i) => (
-                <Link
-                  key={d.key}
-                  className={`featured-card hook-card ${i === 0 ? "large" : ""} ${d.key === "boxing" ? "is-boxing" : ""}`}
-                  to={`/deportes/${d.key}`}
-                >
-                  <img src={d.img} alt={d.label} />
-                  <div className="hook-meta">
+      <main className="home-page">
+        <section className="sports-hero" aria-labelledby="hero-title">
+          <div className="sports-collage">
+            {DISCIPLINES.map((d) => (
+              <Link
+                key={d.key}
+                className={`collage-tile tile-${d.key}`}
+                to={d.href}
+                aria-label={`Entrar a ${d.label}`}
+              >
+                <div className="collage-inner">
+                  <img src={d.img} alt="" />
+                  <div className="collage-meta">
                     <em>{d.tag}</em>
                     <span>{d.label}</span>
-                    <b>Entrar</b>
+                    <b>Entrar →</b>
                   </div>
-                </Link>
-              ))}
+                </div>
+              </Link>
+            ))}
+
+            <div className="collage-center">
+              <div className="collage-inner">
+                <RocaLogo className="collage-logo" />
+                <h1 id="hero-title">
+                  Más que ligas,
+                  <br />
+                  creamos <em>comunidad.</em>
+                </h1>
+                <p>
+                  Fútbol, básquet, box, flag, béisbol, voleibol y ciclismo: ligas,
+                  credenciales Upper Deck y estadísticas en un solo lugar.
+                </p>
+                <div className="hero-actions">
+                  <Link className="btn btn-primary" to="/deportes">
+                    <span>Ver deportes</span>
+                  </Link>
+                  <Link className="btn btn-outline" to="/auth">
+                    <span>Regístrate</span>
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        <section className="scoreboard-strip" aria-label="ScoreCenter">
-          <div className="score-inner">
-            <strong>ROCA ScoreCenter</strong>
-            <span>Credenciales · Pagos · Jornadas · Equipo de la semana</span>
+        <div className="home-marquee" aria-hidden="true">
+          <div className="home-marquee-track">
+            {[0, 1].map((copy) => (
+              <span key={copy}>
+                {DISCIPLINES.map((d) => (
+                  <b key={d.key}>{d.label}</b>
+                ))}
+              </span>
+            ))}
           </div>
-        </section>
-
-        <section className="values section-pad">
-          <div className="section-head">
-            <p className="eyebrow">Plataforma</p>
-            <h2>Todo lo que necesitas para operar tu liga</h2>
-          </div>
-          <div className="values-grid">
-            <article>
-              <h3>Admin</h3>
-              <p>Ve quién pagó, cuántos jugadores hay y tu % de comisión del presupuesto.</p>
-            </article>
-            <article>
-              <h3>Dueño de liga</h3>
-              <p>Banner, logo, colores, estadísticas y cuánto vas a ganar por inscripción.</p>
-            </article>
-            <article>
-              <h3>Jugador</h3>
-              <p>Credencial digital + Upper Deck con el diseño de tu deporte en tu perfil.</p>
-            </article>
-            <article>
-              <h3>Box</h3>
-              <p>Pack de fight night: las Upper Deck chocan y revelan cada deporte.</p>
-            </article>
-          </div>
-        </section>
+        </div>
 
         <section className="section-pad" id="ligas">
-          <div className="section-head">
-            <p className="eyebrow">Disciplinas</p>
-            <h2>Divide la página por deportes</h2>
+          <div className="section-head row-between">
+            <div>
+              <p className="eyebrow">Disciplinas</p>
+              <h2>Elige tu deporte</h2>
+            </div>
+            <Link className="text-link" to="/deportes">
+              Ver todas →
+            </Link>
           </div>
-          <div className="discipline-grid">
+          <div className="discipline-grid all-sports">
             {DISCIPLINES.map((d) => (
               <Link
                 key={d.key}
                 className={`discipline-card hook-card ${d.key === "boxing" ? "is-boxing" : ""}`}
-                to={`/deportes/${d.key}`}
+                to={d.href}
               >
                 <img src={d.img} alt={d.label} />
                 <div className="hook-meta">
@@ -160,6 +182,82 @@ export function LandingPage() {
                 </div>
               </Link>
             ))}
+          </div>
+        </section>
+
+        <section className="section-pad home-steps" aria-labelledby="steps-title">
+          <div className="section-head">
+            <p className="eyebrow">Cómo funciona</p>
+            <h2 id="steps-title">De la inscripción a la cancha</h2>
+          </div>
+          <ol>
+            {STEPS.map((step, i) => (
+              <li key={step.title}>
+                <span className="home-step-num">{String(i + 1).padStart(2, "0")}</span>
+                <h3>{step.title}</h3>
+                <p>{step.copy}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <section className="home-box" aria-labelledby="home-box-title">
+          <div className="home-box-media" aria-hidden="true">
+            <img
+              src="https://images.unsplash.com/photo-1495555687398-3f50d6e79e1e?auto=format&fit=crop&w=1600&q=80"
+              alt=""
+            />
+          </div>
+          <div className="home-box-copy">
+            <p className="eyebrow">ROCA Box · Durango</p>
+            <h2 id="home-box-title">
+              El box de Durango,
+              <br />
+              <em>en un solo lugar.</em>
+            </h2>
+            <p>
+              Campeones por división, ranking libra por libra, cartelera de peleas y el
+              directorio de gimnasios de la capital y los municipios.
+            </p>
+
+            <dl className="home-box-stats">
+              <div>
+                <dt>Gimnasios</dt>
+                <dd>{BOXING_GYMS.length}</dd>
+              </div>
+              <div>
+                <dt>Divisiones</dt>
+                <dd>{DURANGO_CHAMPIONS.length}</dd>
+              </div>
+              <div>
+                <dt>En cartelera</dt>
+                <dd>{BOXING_SCHEDULE.length}</dd>
+              </div>
+            </dl>
+
+            {NEXT_BOUT && (
+              <article className="home-bout">
+                <header>
+                  <span>Próxima pelea</span>
+                  <time>{NEXT_BOUT.dateLabel}</time>
+                </header>
+                <div className="home-bout-row">
+                  <strong>{NEXT_BOUT.left.name}</strong>
+                  <b>VS</b>
+                  <strong>{NEXT_BOUT.right.name}</strong>
+                </div>
+                <small>{NEXT_BOUT.venue}</small>
+              </article>
+            )}
+
+            <div className="hero-actions">
+              <Link className="btn btn-primary" to="/box">
+                Entrar a ROCA Box
+              </Link>
+              <a className="btn btn-outline" href="/box#gimnasios">
+                Buscar gimnasio
+              </a>
+            </div>
           </div>
         </section>
 
@@ -187,25 +285,17 @@ export function LandingPage() {
           </div>
         </section>
 
-        <section className="section-pad box-home fight-night">
-          <div className="section-head">
-            <p className="eyebrow">Fight Night Pack</p>
-            <h2>Abre el box</h2>
-          </div>
-          <UpperDeckBox />
-        </section>
-
-        <section className="cta-band" id="registro">
+        <section className="home-cta" id="registro">
           <div>
             <h2>¿Listo para jugar?</h2>
-            <p>Regístrate, crea tu liga o reclama tu credencial.</p>
+            <p>Regístrate, únete a tu liga y reclama tu credencial.</p>
           </div>
           <div className="hero-actions">
-            <Link className="btn btn-primary" to="/auth">
+            <Link className="btn btn-dark" to="/auth">
               Entrar / Registrarse
             </Link>
-            <Link className="btn btn-outline" to="/dashboard/admin">
-              Dashboard admin
+            <Link className="btn home-cta-ghost" to="/deportes">
+              Ver deportes
             </Link>
           </div>
         </section>
