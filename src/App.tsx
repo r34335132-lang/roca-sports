@@ -9,6 +9,7 @@ import { LigaDetailPage } from "@/pages/LigaDetailPage";
 import { CreateLeaguePage } from "@/pages/CreateLeaguePage";
 import { BoxPage } from "@/pages/BoxPage";
 import { JugadorPage } from "@/pages/JugadorPage";
+import { EventoPage } from "@/pages/EventoPage";
 import { AdminDashboard } from "@/pages/dashboard/AdminDashboard";
 import { OwnerDashboard } from "@/pages/dashboard/OwnerDashboard";
 import { PlayerDashboard } from "@/pages/dashboard/PlayerDashboard";
@@ -28,6 +29,7 @@ export default function App() {
           <Route path="/crear-liga" element={<CreateLeaguePage />} />
           <Route path="/box" element={<BoxPage />} />
           <Route path="/jugador/:id" element={<JugadorPage />} />
+          <Route path="/evento/:slug" element={<EventoPage />} />
           <Route path="/dashboard" element={<DashboardHome />} />
           <Route path="/dashboard/admin" element={<AdminDashboard />} />
           <Route path="/dashboard/dueno" element={<OwnerDashboard />} />
