@@ -4,11 +4,24 @@ import {
   RATING_LABELS,
   overall,
   rarityOf,
+  type FlagCardEdition,
   type FlagCardPlayer,
   type FlagEventTeam,
   type FlagRarity,
 } from "@/lib/flagEvents";
-import { FlagIcon, RARITY_FOIL, RARITY_INK, RARITY_LABEL, focusOf, ratingColor, useReducedMotion } from "./flagUi";
+import {
+  EDITION_FOIL,
+  EDITION_INK,
+  EDITION_LABEL,
+  FederationLogos,
+  FlagIcon,
+  RARITY_FOIL,
+  RARITY_INK,
+  RARITY_LABEL,
+  focusOf,
+  ratingColor,
+  useReducedMotion,
+} from "./flagUi";
 
 type Side = "front" | "back";
 
@@ -32,6 +45,8 @@ export function FlagTcgCard({
   active = true,
   serial,
   badge,
+  edition,
+  honor,
   onSideChange,
 }: {
   player: FlagCardPlayer;
@@ -40,6 +55,9 @@ export function FlagTcgCard({
   active?: boolean;
   serial?: string;
   badge?: string;
+  edition?: FlagCardEdition;
+  /** Texto del reconocimiento en el reverso, ej. "Campeona del Tazón · 18-12". */
+  honor?: string;
   onSideChange?: (side: Side) => void;
 }) {
   const reduceMotion = useReducedMotion();
@@ -134,8 +152,8 @@ export function FlagTcgCard({
   }, [reduceMotion]);
 
   const animated = active && !reduceMotion;
-  const ink = RARITY_INK[rarity];
-  const foil = RARITY_FOIL[rarity];
+  const ink = edition ? EDITION_INK[edition] : RARITY_INK[rarity];
+  const foil = edition ? EDITION_FOIL[edition] : RARITY_FOIL[rarity];
   const glare = clamp((Math.abs(tilt.x) + Math.abs(tilt.y)) / 26, 0, 0.55);
 
   const style = {
@@ -146,7 +164,12 @@ export function FlagTcgCard({
   } as CSSProperties;
 
   return (
-    <div className={`tcg ${animated ? "is-animated" : ""} ${tilt.live ? "is-tilting" : ""}`} style={style} data-rarity={rarity}>
+    <div
+      className={`tcg ${animated ? "is-animated" : ""} ${tilt.live ? "is-tilting" : ""}`}
+      style={style}
+      data-rarity={rarity}
+      data-edition={edition}
+    >
       <div className="tcg-sway">
         <div
           ref={tiltRef}
@@ -168,9 +191,25 @@ export function FlagTcgCard({
             <div className="tcg-frame">
               <div className="tcg-face">
                 {side === "front" ? (
-                  <CardFront player={player} team={team} rarity={rarity} ovr={ovr} serial={serial} badge={badge} onMore={toggleSide} />
+                  <CardFront
+                    player={player}
+                    team={team}
+                    rarity={rarity}
+                    edition={edition}
+                    ovr={ovr}
+                    serial={serial}
+                    badge={badge}
+                    onMore={toggleSide}
+                  />
                 ) : (
-                  <CardBack player={player} team={team} rarity={rarity} ovr={ovr} onBack={toggleSide} />
+                  <CardBack player={player} team={team} edition={edition} honor={honor} ovr={ovr} onBack={toggleSide} />
+                )}
+                {edition === "mvp" && side === "front" && (
+                  <span className="tcg-sparkles" aria-hidden="true">
+                    {[0, 1, 2, 3, 4, 5].map((i) => (
+                      <i key={i} />
+                    ))}
+                  </span>
                 )}
                 <span className="tcg-shine" aria-hidden="true" />
                 <span
@@ -194,6 +233,7 @@ function CardFront({
   player,
   team,
   rarity,
+  edition,
   ovr,
   serial,
   badge,
@@ -202,6 +242,7 @@ function CardFront({
   player: FlagCardPlayer;
   team: FlagEventTeam;
   rarity: FlagRarity;
+  edition?: FlagCardEdition;
   ovr: number;
   serial?: string;
   badge?: string;
@@ -231,20 +272,42 @@ function CardFront({
         </i>
       </div>
 
-      <img className="tcg-fd" src={FLAG_DURANGO_LOGO} alt="Flag Durango" />
+      <div className="tcg-logos">
+        <img className="tcg-fd" src={FLAG_DURANGO_LOGO} alt="Flag Durango" />
+        <FederationLogos className="tcg-fed" />
+      </div>
 
       <div className="tcg-bottom">
-        {badge && (
-          <span className="tcg-badge">
-            <FlagIcon name="zap" size={11} filled />
-            {badge}
-          </span>
+        {(edition || badge) && (
+          <div className="tcg-tags">
+            {edition === "campeona" && (
+              <span className="tcg-crest is-champ">
+                <FlagIcon name="trophy" size={14} />
+                <strong>Campeonas</strong>
+              </span>
+            )}
+            {edition === "mvp" && (
+              <span className="tcg-crest is-mvp">
+                <FlagIcon name="crown" size={14} filled />
+                <strong>MVP</strong>
+                <small>Jugadora más valiosa</small>
+              </span>
+            )}
+            {badge && (
+              <span className="tcg-badge">
+                <FlagIcon name="zap" size={11} filled />
+                {badge}
+              </span>
+            )}
+          </div>
         )}
         <div className="tcg-plate">
           {player.number != null && <b>#{player.number}</b>}
           <strong className={player.name.length > 16 ? "is-long" : undefined}>{player.name}</strong>
         </div>
-        <p className="tcg-team">{team.name} · Upper Deck</p>
+        <p className="tcg-team">
+          {team.name} · {edition === "mvp" ? "Edición MVP" : edition === "campeona" ? "Edición campeonas" : "Upper Deck"}
+        </p>
 
         <div className="tcg-stats">
           {RATING_LABELS.map(({ key, short, label }) => {
@@ -259,7 +322,10 @@ function CardFront({
         </div>
 
         <div className="tcg-footer">
-          <span className="tcg-rarity">{RARITY_LABEL[rarity]}</span>
+          <span className="tcg-rarity">
+            {edition && <FlagIcon name={edition === "mvp" ? "star" : "trophy"} size={9} filled={edition === "mvp"} />}
+            {edition ? EDITION_LABEL[edition] : RARITY_LABEL[rarity]}
+          </span>
           {serial && <span className="tcg-serial">{serial}</span>}
           <button type="button" className="tcg-more" onClick={onMore} aria-label={`Saber más de ${player.name}`}>
             Saber más
@@ -274,13 +340,15 @@ function CardFront({
 function CardBack({
   player,
   team,
-  rarity,
+  edition,
+  honor,
   ovr,
   onBack,
 }: {
   player: FlagCardPlayer;
   team: FlagEventTeam;
-  rarity: FlagRarity;
+  edition?: FlagCardEdition;
+  honor?: string;
   ovr: number;
   onBack: () => void;
 }) {
@@ -300,6 +368,13 @@ function CardBack({
           <small>OVR</small>
         </div>
       </header>
+
+      {edition && honor && (
+        <p className="tcg-honor">
+          <FlagIcon name={edition === "mvp" ? "crown" : "trophy"} size={12} filled={edition === "mvp"} />
+          {honor}
+        </p>
+      )}
 
       <ul className="tcg-bars">
         {RATING_LABELS.map(({ key, label }) => {
@@ -323,10 +398,13 @@ function CardBack({
         ))}
       </div>
 
-      <button type="button" className="tcg-back-btn" onClick={onBack} aria-label={`Ver carta de ${player.name}`}>
-        <FlagIcon name="rotate-ccw" size={14} />
-        Ver carta
-      </button>
+      <div className="tcg-back-foot">
+        <FederationLogos className="tcg-fed" />
+        <button type="button" className="tcg-back-btn" onClick={onBack} aria-label={`Ver carta de ${player.name}`}>
+          <FlagIcon name="rotate-ccw" size={14} />
+          Ver carta
+        </button>
+      </div>
     </div>
   );
 }

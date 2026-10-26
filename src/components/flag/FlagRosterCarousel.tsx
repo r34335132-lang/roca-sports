@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type MouseEvent } from "react";
-import { overall, type FlagEvent, type FlagEventTeam } from "@/lib/flagEvents";
+import { editionOf, honorText, overall, type FlagEvent, type FlagEventTeam } from "@/lib/flagEvents";
 import { FlagTcgCard } from "./FlagTcgCard";
 import { useReducedMotion } from "./flagUi";
 
 const AUTOPLAY_MS = 4500;
 const PAUSE_MS = 12000;
 
-function TeamCarousel({ team, duelIds }: { team: FlagEventTeam; duelIds: Set<string> }) {
+function TeamCarousel({ event, team, duelIds }: { event: FlagEvent; team: FlagEventTeam; duelIds: Set<string> }) {
   const reduceMotion = useReducedMotion();
   const players = useMemo(
     () => [...team.roster].sort((a, b) => overall(b.ratings) - overall(a.ratings)),
@@ -75,27 +75,34 @@ function TeamCarousel({ team, duelIds }: { team: FlagEventTeam; duelIds: Set<str
           onWheel={pause}
           onKeyDown={pause}
         >
-          {players.map((player, i) => (
-            <div
-              key={player.id}
-              className={`fr-slide ${i === active ? "is-active" : ""}`}
-              onClickCapture={focusSlide(i)}
-            >
-              <FlagTcgCard
-                player={player}
-                team={team}
-                width="100%"
-                active={i === active}
-                serial={`${String(i + 1).padStart(2, "0")}/${String(players.length).padStart(2, "0")}`}
-                badge={duelIds.has(player.id) ? "Duelo destacado" : undefined}
-                onSideChange={(side) => {
-                  if (side === "back") flipped.current.add(player.id);
-                  else flipped.current.delete(player.id);
-                  pause();
-                }}
-              />
-            </div>
-          ))}
+          {players.map((player, i) => {
+            const edition = editionOf(event, player);
+            return (
+              <div
+                key={player.id}
+                className={`fr-slide ${i === active ? "is-active" : ""}`}
+                onClickCapture={focusSlide(i)}
+              >
+                <FlagTcgCard
+                  player={player}
+                  team={team}
+                  width="100%"
+                  active={i === active}
+                  edition={edition}
+                  honor={edition && honorText(event, edition)}
+                  serial={
+                    edition === "mvp" ? "1/1" : `${String(i + 1).padStart(2, "0")}/${String(players.length).padStart(2, "0")}`
+                  }
+                  badge={duelIds.has(player.id) ? "Duelo destacado" : undefined}
+                  onSideChange={(side) => {
+                    if (side === "back") flipped.current.add(player.id);
+                    else flipped.current.delete(player.id);
+                    pause();
+                  }}
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -159,7 +166,7 @@ export function FlagRosterCarousel({ event }: { event: FlagEvent }) {
       </div>
 
       <div id="fr-panel" role="tabpanel" aria-labelledby={`fr-tab-${team.id}`}>
-        <TeamCarousel key={team.id} team={team} duelIds={duelIds} />
+        <TeamCarousel key={team.id} event={event} team={team} duelIds={duelIds} />
       </div>
 
       <p className="fr-help">

@@ -1,6 +1,13 @@
 import { useEffect, useState, type CSSProperties } from "react";
-import { FLAG_DURANGO_LOGO, type FlagCardPlayer, type FlagEvent, type FlagEventTeam } from "@/lib/flagEvents";
-import { FlagIcon, focusOf } from "./flagUi";
+import {
+  FLAG_DURANGO_LOGO,
+  championOf,
+  findMvp,
+  type FlagCardPlayer,
+  type FlagEvent,
+  type FlagEventTeam,
+} from "@/lib/flagEvents";
+import { FederationLogos, FlagIcon, focusOf } from "./flagUi";
 
 const MAX_AVATARS = 6;
 
@@ -61,14 +68,19 @@ function AvatarStack({ team, side }: { team: FlagEventTeam; side: "left" | "righ
   );
 }
 
-function TeamSide({ team, side }: { team: FlagEventTeam; side: "left" | "right" }) {
+function TeamSide({ team, side, winner }: { team: FlagEventTeam; side: "left" | "right"; winner: boolean }) {
   return (
-    <div className={`fm-team ${side}`}>
-      <span className="fm-team-logo" style={{ background: team.logoBackground, boxShadow: `0 0 22px ${team.accent}cc` }}>
+    <div className={`fm-team ${side} ${winner ? "is-winner" : ""}`}>
+      <span className="fm-team-logo" style={{ background: team.logoBackground, boxShadow: winner ? undefined : `0 0 22px ${team.accent}cc` }}>
         <img src={team.logo} alt={`Logo ${team.name}`} />
+        {winner && (
+          <i className="fm-team-trophy" aria-hidden="true">
+            <FlagIcon name="trophy" size={14} />
+          </i>
+        )}
       </span>
       <strong>{team.name}</strong>
-      <small>{team.roster.length} jugadoras</small>
+      <small>{winner ? "Campeonas" : `${team.roster.length} jugadoras`}</small>
     </div>
   );
 }
@@ -76,6 +88,8 @@ function TeamSide({ team, side }: { team: FlagEventTeam; side: "left" | "right" 
 export function FlagMatchupCard({ event }: { event: FlagEvent }) {
   const countdown = useCountdown(event.kickoff);
   const today = isSameDay(event.kickoff);
+  const champion = championOf(event);
+  const mvp = findMvp(event);
   const { primary, accent } = event.theme;
 
   const style = {
@@ -92,7 +106,10 @@ export function FlagMatchupCard({ event }: { event: FlagEvent }) {
 
       <header className="fm-top">
         <p>Carta de enfrentamiento</p>
-        <img className="fm-fd" src={FLAG_DURANGO_LOGO} alt="Flag Durango" />
+        <div className="fm-orgs">
+          <FederationLogos className="fm-fed" />
+          <img className="fm-fd" src={FLAG_DURANGO_LOGO} alt="Flag Durango" />
+        </div>
       </header>
 
       <div className="fm-logo">
@@ -102,14 +119,14 @@ export function FlagMatchupCard({ event }: { event: FlagEvent }) {
       </div>
 
       <div className="fm-row">
-        <TeamSide team={event.home} side="left" />
+        <TeamSide team={event.home} side="left" winner={champion?.id === event.home.id} />
         <div className="fm-vs" aria-label="contra">
           <span className="fm-vs-ring" aria-hidden="true" />
           <span className="fm-vs-pop">
             <b>VS</b>
           </span>
         </div>
-        <TeamSide team={event.away} side="right" />
+        <TeamSide team={event.away} side="right" winner={champion?.id === event.away.id} />
       </div>
 
       <div className="fm-rosters">
@@ -118,10 +135,25 @@ export function FlagMatchupCard({ event }: { event: FlagEvent }) {
       </div>
 
       {event.score ? (
-        <div className="fm-score" aria-label={`Final: ${event.home.name} ${event.score.home}, ${event.away.name} ${event.score.away}`}>
-          <strong>{event.score.home}</strong>
-          <span>Final</span>
-          <strong>{event.score.away}</strong>
+        <div className="fm-final">
+          <div className="fm-score" aria-label={`Final: ${event.home.name} ${event.score.home}, ${event.away.name} ${event.score.away}`}>
+            <strong className={champion?.id === event.home.id ? "is-win" : undefined}>{event.score.home}</strong>
+            <span>Final</span>
+            <strong className={champion?.id === event.away.id ? "is-win" : undefined}>{event.score.away}</strong>
+          </div>
+          {champion && (
+            <p className="fm-champ">
+              <FlagIcon name="trophy" size={16} />
+              {champion.name} campeonas
+            </p>
+          )}
+          {mvp && (
+            <p className="fm-mvp">
+              <FlagIcon name="star" size={13} filled />
+              MVP: {mvp.player.name}
+              {mvp.player.number != null ? ` #${mvp.player.number}` : ""}
+            </p>
+          )}
         </div>
       ) : countdown ? (
         <div className="fm-countdown" role="timer" aria-label={`Faltan ${countdown.d} días ${countdown.h} horas ${countdown.m} minutos`}>
@@ -157,7 +189,7 @@ export function FlagMatchupCard({ event }: { event: FlagEvent }) {
           {event.venue}
         </li>
       </ul>
-      <p className="fm-presenta">Presenta {event.organizer}</p>
+      <p className="fm-presenta">Presenta {event.organizer} · Avalado por FAD y FMFA</p>
     </section>
   );
 }

@@ -2,6 +2,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { SiteFooter, SiteHeader } from "@/components/layout/SiteHeader";
 import { FlagDuelCard } from "@/components/flag/FlagDuelCard";
 import { FlagMatchupCard } from "@/components/flag/FlagMatchupCard";
+import { FlagMvpSpotlight } from "@/components/flag/FlagMvpSpotlight";
 import { FlagRosterCarousel } from "@/components/flag/FlagRosterCarousel";
 import { FlagIcon } from "@/components/flag/flagUi";
 import { findFlagEvent } from "@/lib/flagEvents";
@@ -40,6 +41,7 @@ export function EventoPage() {
               </header>
 
               <FlagMatchupCard event={event} />
+              <FlagMvpSpotlight event={event} />
               <FlagDuelCard event={event} />
               <FlagRosterCarousel event={event} />
 

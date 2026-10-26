@@ -66,9 +66,19 @@ export type FlagEvent = {
   score?: { home: number; away: number } | null;
   /** Duelo destacado entre una jugadora de cada equipo (usa los id del roster). */
   featuredDuel?: { homePlayerId: string; awayPlayerId: string; title: string; subtitle?: string } | null;
+  /** MVP del juego (id del roster). Su carta sale en edición especial. */
+  mvpPlayerId?: string | null;
 };
 
+/** Campeona: todas las del equipo ganador. MVP: la jugadora de mvpPlayerId. */
+export type FlagCardEdition = "campeona" | "mvp";
+
 export const FLAG_DURANGO_LOGO = "/flag/flag-durango.png";
+
+export const FEDERATION_LOGOS = [
+  { src: "/flag/fad.png", short: "FAD", name: "Asociación Estatal de Flag y Futbol Americano de Durango" },
+  { src: "/flag/fmfa.png", short: "FMFA", name: "Federación Mexicana de Futbol Americano" },
+];
 
 export const RATING_LABELS: { key: keyof FlagRatings; short: string; label: string }[] = [
   { key: "pases", short: "PAS", label: "Pases" },
@@ -110,7 +120,7 @@ export const BLACK_RAVENS: FlagEventTeam = {
       photo: jugadora("fernanda"),
       photoFocus: { x: 0.52, y: 0.42, zoom: 1.35 },
       bio: "Tras practicar fútbol soccer durante años, descubrí el flag football hace 4 años y se convirtió en mi deporte favorito.",
-      ratings: { pases: 95, rapidez: 90, cachar: 86, intercepciones: 84, vision: 96 },
+      ratings: { pases: 99, rapidez: 96, cachar: 92, intercepciones: 90, vision: 99 },
       rarity: "leyenda",
     },
     {
@@ -121,7 +131,7 @@ export const BLACK_RAVENS: FlagEventTeam = {
       photo: jugadora("jatshiry"),
       photoFocus: { x: 0.47, y: 0.45, zoom: 1.1 },
       bio: "Jugué básquetbol desde chica, pero un día descubrí el tocho y ya llevo 3 años en este deporte que cambió mi vida por completo.",
-      ratings: { pases: 90, rapidez: 92, cachar: 93, intercepciones: 74, vision: 88 },
+      ratings: { pases: 94, rapidez: 96, cachar: 97, intercepciones: 78, vision: 92 },
     },
     {
       id: "black-ravens-camila",
@@ -132,7 +142,7 @@ export const BLACK_RAVENS: FlagEventTeam = {
       photoFocus: { x: 0.47, y: 0.42, zoom: 1.15 },
       bio:
         "Empecé a jugar flag en el equipo de mi preparatoria en 2022 para liberar mi servicio social. En el proceso me gustó mucho el deporte y seguí jugando hasta la actualidad con mi mismo equipo, pero con diferente nombre: ahora Black Ravens. Gracias al flag he podido crecer en mi disciplina y mi confianza, y por esa disciplina fui seleccionada para la LMT 2026.\n\nEl flag también me ha acercado a otros ámbitos del deporte: el año pasado me invitaron a ser árbitro y este año, como ref, he podido arbitrar en FlagDgo y en otros torneos del estado, creciendo en mi conocimiento del reglamento y explorando todo lo que este deporte tiene para dar.",
-      ratings: { pases: 72, rapidez: 90, cachar: 89, intercepciones: 88, vision: 87 },
+      ratings: { pases: 76, rapidez: 94, cachar: 93, intercepciones: 92, vision: 91 },
     },
     {
       id: "black-ravens-gabriela",
@@ -142,7 +152,7 @@ export const BLACK_RAVENS: FlagEventTeam = {
       photo: jugadora("gabriela"),
       photoFocus: { x: 0.5, y: 0.35, zoom: 1.1 },
       bio: "Llevo 4 años practicando flag; inicié cuando entré a la prepa. Antes de eso estuve 3 años en boxeo y, cuando era niña, practiqué gimnasia durante 5 años.",
-      ratings: { pases: 76, rapidez: 88, cachar: 89, intercepciones: 78, vision: 87 },
+      ratings: { pases: 80, rapidez: 92, cachar: 93, intercepciones: 82, vision: 91 },
     },
     {
       id: "black-ravens-marijose",
@@ -151,7 +161,7 @@ export const BLACK_RAVENS: FlagEventTeam = {
       position: "WR",
       photo: jugadora("marijose"),
       bio: "Empecé a jugar tocho cuando comencé la prepa con el equipo Búfalos UIM, el cual combiné con entrenamientos de porras durante un tiempo.",
-      ratings: { pases: 68, rapidez: 86, cachar: 96, intercepciones: 72, vision: 89 },
+      ratings: { pases: 72, rapidez: 90, cachar: 99, intercepciones: 76, vision: 93 },
     },
     {
       id: "black-ravens-melany",
@@ -161,7 +171,7 @@ export const BLACK_RAVENS: FlagEventTeam = {
       photo: jugadora("melany"),
       photoFocus: { x: 0.55, y: 0.35, zoom: 1.15 },
       bio: "Llevo alrededor de 3 años jugando tocho bandera y he estado en 3 equipos. Antes de empezar en el tocho bandera practicaba fútbol soccer y voleibol.",
-      ratings: { pases: 64, rapidez: 85, cachar: 88, intercepciones: 82, vision: 80 },
+      ratings: { pases: 68, rapidez: 89, cachar: 92, intercepciones: 86, vision: 84 },
     },
     {
       id: "black-ravens-maria-guadalupe",
@@ -172,7 +182,7 @@ export const BLACK_RAVENS: FlagEventTeam = {
       photoFocus: { x: 0.52, y: 0.4, zoom: 1.15 },
       bio:
         "“Vive tu momento, porque el tiempo pasa y no perdona.”\n\nJugadora desde los 13 años. Juego como center titular: en los pases cortos puedo servir y avanzar, y mi fuerte es la habilidad con los centros. Empecé en el flag en 2012, un año adelantada en la escuela; hoy tengo 23 años y en el camino conocí a grandes estrellas como Andrea Monsiváis, Valeri Carranza y Rodrigo Aquino. Antes practicaba atletismo, donde fui campeona y subcampeona por dos años.\n\nTrayectoria: Leonas Flag de la EST 61 (2012–2014), Burros Blancos ITD (2018–2021), Redfox Flag (2021–2022) y Black Ravens Flag (2025–2026).\n\nLogros:\n• Subcampeonas nacionales en Zacatecas con Burras Blancas (sep 2021)\n• Campeonas con Black Ravens en la Lobos Night League (oct 2025)\n• Campeonas de la Liga Otoño-Invierno Flag Durango",
-      ratings: { pases: 70, rapidez: 74, cachar: 91, intercepciones: 72, vision: 88 },
+      ratings: { pases: 74, rapidez: 78, cachar: 95, intercepciones: 76, vision: 92 },
     },
     {
       id: "black-ravens-darla",
@@ -182,7 +192,7 @@ export const BLACK_RAVENS: FlagEventTeam = {
       photo: jugadora("darla"),
       photoFocus: { x: 0.52, y: 0.45, zoom: 1.1 },
       bio: "Estuve en natación y después me cambié al tochito bandera, deporte en el que llevo 3 años aprendiendo, creciendo y viviendo nuevas experiencias que me han dejado grandes enseñanzas.",
-      ratings: { pases: 58, rapidez: 90, cachar: 72, intercepciones: 80, vision: 82 },
+      ratings: { pases: 62, rapidez: 94, cachar: 76, intercepciones: 84, vision: 86 },
     },
   ],
 };
@@ -317,7 +327,8 @@ export const TAZON_GRAN_FAMILIA: FlagEvent = {
   theme: { primary: "#6b2fb8", accent: "#ff2e93" },
   home: BLACK_RAVENS,
   away: DSM,
-  score: null,
+  score: { home: 18, away: 12 },
+  mvpPlayerId: "black-ravens-fernanda",
   featuredDuel: {
     homePlayerId: "black-ravens-fernanda",
     awayPlayerId: "dsm-valeria",
@@ -332,6 +343,32 @@ export function findFeaturedDuel(event: FlagEvent) {
   const home = event.home.roster.find((p) => p.id === duel.homePlayerId);
   const away = event.away.roster.find((p) => p.id === duel.awayPlayerId);
   return home && away ? { ...duel, home, away } : null;
+}
+
+export function championOf(event: FlagEvent): FlagEventTeam | null {
+  const s = event.score;
+  if (!s || s.home === s.away) return null;
+  return s.home > s.away ? event.home : event.away;
+}
+
+export function findMvp(event: FlagEvent) {
+  if (!event.mvpPlayerId) return null;
+  for (const team of [event.home, event.away]) {
+    const player = team.roster.find((p) => p.id === event.mvpPlayerId);
+    if (player) return { player, team };
+  }
+  return null;
+}
+
+export function editionOf(event: FlagEvent, player: FlagCardPlayer): FlagCardEdition | undefined {
+  if (player.id === event.mvpPlayerId) return "mvp";
+  if (championOf(event)?.roster.some((p) => p.id === player.id)) return "campeona";
+  return undefined;
+}
+
+export function honorText(event: FlagEvent, edition: FlagCardEdition) {
+  const result = event.score ? ` · ${event.home.name} ${event.score.home}-${event.score.away} ${event.away.name}` : "";
+  return `${edition === "mvp" ? "MVP" : "Campeona"} del ${event.title}${result}`;
 }
 
 export const FLAG_EVENTS: FlagEvent[] = [TAZON_GRAN_FAMILIA];
